@@ -23,6 +23,20 @@ ACTIVE - All endpoints that have a successful last request
 SUSPENDED - All endpoints that have a failed last request
 BLOCKED - Black listed 
 
+Balancer
+Responsible for trying to fulfil a request using one of the available Endpoints. It tries all available Endpoints until
+some of them fulfils the request or all fail. The strategy of electing which Endpoint should be the next candidate for
+attempting the request depends on the routing implementation of the subclasses.
+
+RoundRobinLoadBalancer
+Balancer that implements the circular strategy for electing the Endpoints.
+
+RandomLoadBalancer
+Balancer that implements the random strategy for electing the Endpoints.
+
+HttpForwarder
+Helper for executing HTTP requests in remote hosts.
+
 
 ##Improvements:
 Implement more Strategies of load balancing
