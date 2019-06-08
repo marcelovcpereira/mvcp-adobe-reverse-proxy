@@ -16,9 +16,9 @@ spec:
           name: {{ .Values.marceloAdobeTest.appName }}
           env:
             - name: REVERSE_PROXY_PORT
-              value: {{ .Values.marceloAdobeTest.proxy.listen.port }}
+              value: {{ .Values.marceloAdobeTest.proxy.listen.port | quote }}
             - name: REVERSE_PROXY_SERVICES
-              value: {{- range $key, $value := .Values.marceloAdobeTest.proxy.services }}{{$value.name}},{{$value.domain}},{{$value.strategy}},{{- range $key2, $value2 := $value.hosts}}{{$value2.address}}:{{$value2.port}},{{- end}};{{- end}}
+              value: "{{- range $key, $value := .Values.marceloAdobeTest.proxy.services }}{{$value.name}},{{$value.domain}},{{$value.strategy}},{{- range $key2, $value2 := $value.hosts}}{{$value2.address}}:{{$value2.port}},{{- end}};{{- end}}"
             {{- range $key, $value := .Values.marceloAdobeTest.configMap }}
             - name: {{ $key }}
               valueFrom:
@@ -28,4 +28,4 @@ spec:
             {{- end }}
           ports:
             - containerPort: {{ .Values.marceloAdobeTest.service.port }}
-              name: {{ .Values.marceloAdobeTest.appName }}
+              name: default
