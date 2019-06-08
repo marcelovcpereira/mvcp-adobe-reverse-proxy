@@ -69,7 +69,7 @@ public class ReverseProxy {
     }
 
     //Code Reference: https://stackoverflow.com/questions/3584210/preferred-java-way-to-ping-an-http-url-for-availability
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 10000)
     public void pollServiceEndpoints() throws Exception {
         for (Service service : services) {
             logger.info("Polling endpoints statuses for service " + service.toString() + "...");
