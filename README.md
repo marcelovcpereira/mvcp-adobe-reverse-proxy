@@ -38,6 +38,12 @@ HttpForwarder
 Helper for executing HTTP requests in remote hosts.
 
 
+#Install/Delete Helm Chart:
+```
+./devops helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f values.yaml
+./devops helm del --purge marcelo-adobe-reverse-proxy
+```
+
 ##Improvements:
 Implement more Strategies of load balancing
 Externalize the configuration of the "interval of polling servers"

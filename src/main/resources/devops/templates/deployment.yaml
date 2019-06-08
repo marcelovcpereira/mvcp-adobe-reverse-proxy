@@ -12,16 +12,6 @@ spec:
         app: {{ .Values.marceloAdobeTest.appName }}
     spec:
       containers:
-        - name: prometheus
-          image: prom/prometheus:v2.2.1
-          args:
-            - "--config.file=/etc/prometheus/prometheus.yml"
-          ports:
-            - containerPort: 9191
-          volumeMounts:
-            - name: prometheus-config-volume
-              mountPath: /etc/prometheus/
-
         - image: {{ .Values.marceloAdobeTest.image.repository }}
           name: {{ .Values.marceloAdobeTest.appName }}
           env:
@@ -37,10 +27,5 @@ spec:
                   key: {{ $key }}
             {{- end }}
           ports:
-            - containerPort: {{ .Values.marceloAdobeTest.service.port }}
+            - containerPort: {{ .Values.marceloAdobeTest.proxy.listen.port }}
               name: default
-      volumes:
-        - name: prometheus-config-volume
-          configMap:
-            defaultMode: 420
-            name: prometheus-config-map

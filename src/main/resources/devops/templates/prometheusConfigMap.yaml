@@ -5,7 +5,6 @@ metadata:
   name: prometheus-config-map
   labels:
     name: prometheus-config-map
-  namespace: monitoring
 data:
   prometheus.yml: |-
     global:
@@ -14,7 +13,7 @@ data:
 
     scrape_configs:
       - job_name: 'reverse-proxy'
-        metrics_path: /prometheus
+        metrics_path: /actuator/prometheus
         scrape_interval: 10s
         static_configs:
-          - targets: ['marcelo-adobe-test.svc.private:9090']
+          - targets: ['marcelo-adobe-test.marcelo-test.svc.cluster.local:{{.Values.marceloAdobeTest.proxy.listen.port}}']

@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.marceloAdobeTest.appName }}
 spec:
   ports:
-    - port: {{ .Values.marceloAdobeTest.service.port }}
+    - port: {{.Values.marceloAdobeTest.proxy.listen.port }}
   selector:
     app: {{ .Values.marceloAdobeTest.appName }}
   clusterIP: None
