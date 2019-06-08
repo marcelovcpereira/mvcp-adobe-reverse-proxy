@@ -16,14 +16,11 @@ spec:
           image: prom/prometheus:v2.2.1
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
-            - "--storage.tsdb.path=/prometheus/"
           ports:
             - containerPort: 9191
           volumeMounts:
             - name: prometheus-config-volume
               mountPath: /etc/prometheus/
-            - name: prometheus-storage-volume
-              mountPath: /prometheus/
 
         - image: {{ .Values.marceloAdobeTest.image.repository }}
           name: {{ .Values.marceloAdobeTest.appName }}
