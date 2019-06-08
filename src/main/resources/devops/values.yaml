@@ -1,0 +1,44 @@
+marceloAdobeTest:
+  appName: marcelo-adobe-test
+  image:
+    repository: marcelovcpereira/adobe-test:1.0.0
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: "1500m"
+      memory: "4096Mi"
+    requests:
+      cpu: "1500m"
+      memory: "4096Mi"
+
+  service:
+    type: ClusterIP
+    port: 9090
+
+  configMap:
+    REVERSE_PROXY_ENVIRONMENT: dev
+
+  proxy:
+    listen:
+      address: "127.0.0.1"
+      port: 9090
+    services:
+      - name: my-service-a
+        domain: a.my-services.com
+        strategy: random
+        hosts:
+          - address: "10.0.0.1"
+            port: 9090
+          - address: "10.0.0.2"
+            port: 9090
+      - name: b-service
+        domain: b.my-services.com
+        strategy: round_robin
+        hosts:
+          - address: "10.0.0.1"
+            port: 9090
+          - address: "10.0.0.2"
+            port: 9090
+    monitoring:
+      address: "127.0.0.1"
+      port: 8081

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.marceloAdobeTest.appName }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.marceloAdobeTest.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.marceloAdobeTest.appName }}
+    spec:
+      containers:
+        - image: {{ .Values.marceloAdobeTest.image.repository }}
+          name: {{ .Values.marceloAdobeTest.appName }}
+          env:
+            - name: REVERSE_PROXY_PORT
+              value: {{ .Values.marceloAdobeTest.proxy.listen.port }}
+            - name: REVERSE_PROXY_SERVICES
+              value: {{- range $key, $value := .Values.marceloAdobeTest.proxy.services }}{{$value.name}},{{$value.domain}},{{$value.strategy}},{{- range $key2, $value2 := $value.hosts}}{{$value2.address}}:{{$value2.port}},{{- end}};{{- end}}
+            {{- range $key, $value := .Values.marceloAdobeTest.configMap }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.marceloAdobeTest.appName }}
+                  key: {{ $key }}
+            {{- end }}
+          ports:
+            - containerPort: {{ .Values.marceloAdobeTest.service.port }}
+              name: {{ .Values.marceloAdobeTest.appName }}
