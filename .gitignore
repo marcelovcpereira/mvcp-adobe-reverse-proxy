@@ -6,6 +6,7 @@ gen
 
 *.ipr
 *.iws
+*.jar
 */target/*
 target
 */classes/*
