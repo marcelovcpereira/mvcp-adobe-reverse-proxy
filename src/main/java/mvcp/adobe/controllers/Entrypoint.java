@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+/**
+ * Unique controller of the application. It's responsible for intercepting all HTTP requests for routing.
+ */
 @RequestMapping("/")
 @RestController
 public class Entrypoint {
@@ -29,6 +32,17 @@ public class Entrypoint {
     private ReverseProxy proxy;
 
 
+    /**
+     * Captures all incoming HTTP requests.
+     * The requests are processed into internal structure, then forwarded to the target Service where it will be
+     * load-balaced. Finally, receives and returns back the response to the caller.
+     *
+     * This endpoint captures all HTTP method requests.
+     *
+     * @param body Map  Payload of the request
+     * @param r HTTPServletRequest Object containing information about the HTTP request
+     * @return
+     */
     @RequestMapping(value = "**")
     public ResponseEntity<String> get(@RequestBody(required = false) Map<String, String> body, HttpServletRequest r) {
         try {
