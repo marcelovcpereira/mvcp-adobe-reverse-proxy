@@ -23,8 +23,9 @@ marceloAdobeTest:
 #######################
   proxy:
     listen:
-      address: 127.0.0.1
-      port: 8888
+      #do not bind to 127.0.0.1 or containar won't be accessible from outside
+      address: 0.0.0.0
+      port: 9999
     services:
       - name: my-service-a
         domain: a.my-services.com

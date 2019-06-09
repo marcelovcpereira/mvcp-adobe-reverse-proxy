@@ -1,5 +1,8 @@
 #Reference for this file is a Project that I have participated: 
 #https://bitbucket.org/obviobrasil/raichu-devops-gcp/src/develop/grafana/values-staging.yaml
+#
+#Reference for dashboards:
+#https://g00glen00b.be/monitoring-spring-prometheus-grafana/
 serviceAccount:
   create: true
   name:
@@ -37,7 +40,7 @@ datasources:
     datasources:
       - name: Prometheus
         type: prometheus
-        url: http://prometheus-service.marcelo-test.svc.cluster.local:9999
+        url: http://marcelo-adobe-prometheus-server.marcelo-test.svc.cluster.local:80
         access: proxy
         isDefault: true
       
@@ -56,9 +59,9 @@ datasources:
 #        path: /var/lib/grafana/dashboards/default
 
 # dashboards: 
-#  default:
-#    marcelo-elasticsearch-dashboard:
-#       json: elasticsearch.json
+ # default:
+   # marcelo-reverse-proxy-dashboard:
+      # json: grafana-dashboard.json
 
 
 ## Grafana's primary configuration

@@ -45,9 +45,15 @@ for launching the application in a kubernetes cluster. Switch to this directory 
 helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f values.yaml .
 helm install --name marcelo-adobe-prometheus --namespace marcelo-test -f prometheus-values.yaml stable/prometheus
 helm install --name marcelo-adobe-grafana --namespace marcelo-test -f grafana-values.yaml stable/grafana
-helm del --purge marcelo-adobe-reverse-proxy
-helm del --purge marcelo-adobe-grafana 
 ```
+
+To clean helm installations:
+```bash
+helm del --purge marcelo-adobe-reverse-proxy
+helm del --purge marcelo-adobe-grafana
+helm del --purge marcelo-adobe-prometheus 
+```
+
 
 For running the reverse-proxy as a local docker image, use the following command:
 ```
@@ -88,11 +94,28 @@ curl -XGET -H "Host: b.my-services.com" http://localhost:8888/marcelo/serviceb/1
 response:
 >{"idServiceA": 15}
 
+Visiting Prometheus dashboard:
+```bash
+kubectl port-forward -n marcelo-test svc/marcelo-adobe-prometheus-server 9090:80
+```
+
+Visiting Grafana dashboard:
+```bash
+kubectl port-forward  marcelo-test svc/marcelo-adobe-grafana 8080:80
+```
+
+Install the grafana dashboard:
+```bash
+kubectl apply -n marcelo-test -f ./src/main/resources/devops/grafanaConfigMap.yaml
+```
 
 ## Improvements:
 - Implement more Strategies of load balancing
 - Externalize the configuration of the "interval of polling servers"
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
-- Extract Prometheus to a separate Chart (using https://github.com/helm/charts/tree/master/stable/prometheus)
+- Create a grafana dashboard
+- Configure Swagger for documenting the API
+- Embbed Prometheus deployment into the same root chart
+- Embbed Grafana deployment into the same root chart
 - Configure Alert Manager
