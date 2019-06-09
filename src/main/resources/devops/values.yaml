@@ -29,18 +29,16 @@ marceloAdobeTest:
         domain: a.my-services.com
         strategy: random
         hosts:
-          - address: "10.0.0.0"
-            port: 8000
-          - address: "10.0.0.0"
-            port: 8001
-      - name: b-service
-        domain: b.my-services.com
-        strategy: round_robin
-        hosts:
-          - address: "10.0.0.0"
-            port: 8002
-          - address: "10.0.0.0"
-            port: 8003
+          - address: "marcelo-adobe-service-a.marcelo-test.svc.cluster.local"
+            port: 9000
+      # - name: b-service
+      #   domain: b.my-services.com
+      #   strategy: round_robin
+      #   hosts:
+      #     - address: "10.0.0.0"
+      #       port: 8002
+      #     - address: "10.0.0.0"
+      #       port: 8003
     exposedManagementEndpoints: health,info,metrics,prometheus
     monitoring:
       prometheus:

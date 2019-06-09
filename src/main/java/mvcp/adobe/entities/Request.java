@@ -92,7 +92,9 @@ public class Request {
     }
 
     public String getHostHeader() {
-        return this.getHeaders().get("host");
+        String host = this.getHeaders().get("host");
+        if (host == null) host = this.getHeaders().get("Host");
+        return host;
     }
 }
 

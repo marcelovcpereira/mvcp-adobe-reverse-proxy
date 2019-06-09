@@ -41,6 +41,7 @@ public class ReverseProxy {
     public Service discoverService(Request req) throws ServiceHostNotFoundException {
         logger.info("Discovering service...");
         for (Service service : this.services) {
+            logger.info("Comparing service domain " + service.getDomain().trim() + " with " + req.getHostHeader());
             if (service.getDomain().trim().equalsIgnoreCase(req.getHostHeader())) {
                 logger.info("Found: " + service);
                 return service;
@@ -77,8 +78,10 @@ public class ReverseProxy {
                 try (Socket socket = new Socket()) {
                     socket.connect(new InetSocketAddress(endpoint.getIp(), endpoint.getPort()), REQUEST_TIMEOUT);
                     endpoint.setStatus(EndpointStatus.ACTIVE);
+                    logger.info(endpoint.toJsonString());
                 } catch (IOException e) {
                     endpoint.setStatus(EndpointStatus.SUSPENDED);
+                    logger.info(endpoint.toJsonString());
                 }
             }
         }
