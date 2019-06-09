@@ -40,20 +40,20 @@ Balancer that implements the random strategy for electing the Endpoints.
 Helper for executing HTTP requests in remote hosts.
 
 
-## Install/Delete Helm Chart:
-Inside the project folder there is a "mvcp-adobe-reverse-proxy/src/main/resources/devops" directory containing the necessary files 
-for launching the application in a kubernetes cluster. Switch to this directory to find the files and fire the following commands:
+## Deploy Reverse Proxy in a Kubernetes Cluster via Helm Chart:
+>After cloning, notice that inside the project folder there is a "mvcp-adobe-reverse-proxy/src/main/resources/devops" directory containing the necessary files for launching the application in a kubernetes cluster as shown below:
 ```bash
+git clone https://github.com/marcelovcpereira/mvcp-adobe-reverse-proxy.git
 helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f values.yaml .
 ```
+The above command will deploy the Reverse Proxy only. For deploying all features, see section below "Playing with the Reverse Proxy".
+
 
 ## Playing with the Reverse Proxy:
 
->Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
-
 ### Deploying Mock Services to the Kubernetes Cluster:
 
-#### Service A (3 values prepared for multiplicity):
+#### Service A (3 values prepared for testing load balance strategies):
 ```bash
 git clone https://github.com/marcelovcpereira/mvcp-adobe-service-a.git
 helm install --name marcelo-adobe-service-a --namespace marcelo-test -f values.yaml ./mvcp-adobe-service-a/src/main/resources/devops
@@ -61,7 +61,7 @@ helm install --name marcelo-adobe-service-a2 --namespace marcelo-test -f values2
 helm install --name marcelo-adobe-service-a3 --namespace marcelo-test -f values3.yaml ./mvcp-adobe-service-a/src/main/resources/devops
 ```
 
-#### Service B (3 values prepared for multiplicity):
+#### Service B (3 values prepared for testing load balance strategies):
 ```bash
 git clone https://github.com/marcelovcpereira/mvcp-adobe-service-b.git
 helm install --name marcelo-adobe-service-b --namespace marcelo-test -f values.yaml ./mvcp-adobe-service-b/src/main/resources/devops
@@ -76,6 +76,7 @@ helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f valu
 ```
 
 ### Using K8s Port-forward + cUrl
+>Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
 ```bash
 kubectl port-forward -n marcelo-test svc/marcelo-adobe-test 8888:8888
 curl -XGET -H "Host: a.my-services.com" http://localhost:8888/marcelo/test/15
@@ -116,6 +117,12 @@ After the port forward, access in your browser: http://localhost:8080
 helm del --purge marcelo-adobe-reverse-proxy
 helm del --purge marcelo-adobe-grafana
 helm del --purge marcelo-adobe-prometheus 
+helm del --purge marcelo-adobe-service-a
+helm del --purge marcelo-adobe-service-a2
+helm del --purge marcelo-adobe-service-a3
+helm del --purge marcelo-adobe-service-b
+helm del --purge marcelo-adobe-service-b2
+helm del --purge marcelo-adobe-service-b3
 ```
 
 
