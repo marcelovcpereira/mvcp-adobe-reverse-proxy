@@ -43,6 +43,7 @@ Inside the project folder there is a "mvcp-adobe-reverse-proxy/src/main/resource
 for launching the application in a kubernetes cluster. Switch to this directory to find the files and fire the following commands:
 ```bash
 helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f values.yaml .
+helm install --name marcelo-adobe-prometheus --namespace marcelo-test -f prometheus-values.yaml stable/prometheus
 helm install --name marcelo-adobe-grafana --namespace marcelo-test -f grafana-values.yaml stable/grafana
 helm del --purge marcelo-adobe-reverse-proxy
 helm del --purge marcelo-adobe-grafana 
@@ -94,3 +95,4 @@ response:
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
 - Extract Prometheus to a separate Chart (using https://github.com/helm/charts/tree/master/stable/prometheus)
+- Configure Alert Manager

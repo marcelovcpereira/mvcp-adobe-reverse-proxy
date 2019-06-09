@@ -1,11 +1,14 @@
 package mvcp.adobe.entities;
 
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class Request {
+    public static final Logger logger = (Logger) LoggerFactory.getLogger(Request.class);
     private Map<String, String> headers;
     private Map<String, String> body;
     private String path;
@@ -78,6 +81,7 @@ public class Request {
 
     public static Request fromContextRequest(HttpServletRequest request, Map<String,String> body) {
         Request req = null;
+        logger.info("Creating request object...");
         if (request != null) {
             Map<String, String> headers = new HashMap<>();
             Enumeration<String> headerNames = request.getHeaderNames();
@@ -86,7 +90,15 @@ public class Request {
                 String value = request.getHeader(name);
                 headers.put(name, value);
             }
+            logger.info("Found the following headers:");
+            String h = "";
+            for (String key : headers.keySet()) {
+                String value = headers.get(key);
+                h += key + ":" + value + ",";
+            }
+            logger.info(h.substring(0, h.length()-1));
             req = new Request(request.getProtocol().replace("HTTP/", ""), request.getMethod(), request.getRequestURI(), headers, body);
+            logger.info("Request created: " + new Gson().toJson(req));
         }
         return req;
     }
