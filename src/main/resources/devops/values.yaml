@@ -11,8 +11,12 @@ marceloAdobeTest:
       cpu: "1500m"
       memory: "4096Mi"
 
+#########################
+# Environment Variables #
+#########################
   configMap:
     REVERSE_PROXY_ENVIRONMENT: dev
+
 #######################
 # PROXY CONFIGURATION #
 #######################
@@ -37,6 +41,7 @@ marceloAdobeTest:
             port: 8002
           - address: "10.0.0.0"
             port: 8003
+    exposedManagementEndpoints: health,info,metrics,prometheus
     monitoring:
       prometheus:
         port: 9999
