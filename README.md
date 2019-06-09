@@ -130,12 +130,13 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 
 
 ## Improvements:
+- Implement HTTP Cache Control
 - Implement more Strategies of load balancing
 - Increase test coverage
 - Externalize the configuration of the "interval of polling servers" (currently: 10s)
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
-- Configure Swagger for documenting the API
 - Embbed Prometheus deployment into the same root chart
 - Embbed Grafana deployment into the same root chart
 - Configure Alert Manager
+- Generate/expose metrics from attached Services (availability, latency, etc)
