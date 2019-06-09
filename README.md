@@ -47,7 +47,45 @@ for launching the application in a kubernetes cluster. Switch to this directory 
 helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f values.yaml .
 ```
 
-## SLI
+## Playing with the Reverse Proxy:
+
+>Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
+
+### Deploying Mock Services to the Kubernetes Cluster:
+
+#### Service A (3 values prepared for multiplicity):
+```bash
+git clone https://github.com/marcelovcpereira/mvcp-adobe-service-a.git
+helm install --name marcelo-adobe-service-a --namespace marcelo-test -f values.yaml ./mvcp-adobe-service-a/src/main/resources/devops
+helm install --name marcelo-adobe-service-a2 --namespace marcelo-test -f values2.yaml ./mvcp-adobe-service-a/src/main/resources/devops
+helm install --name marcelo-adobe-service-a3 --namespace marcelo-test -f values3.yaml ./mvcp-adobe-service-a/src/main/resources/devops
+```
+
+#### Service B (3 values prepared for multiplicity):
+```bash
+git clone https://github.com/marcelovcpereira/mvcp-adobe-service-b.git
+helm install --name marcelo-adobe-service-b --namespace marcelo-test -f values.yaml ./mvcp-adobe-service-b/src/main/resources/devops
+helm install --name marcelo-adobe-service-b2 --namespace marcelo-test -f values2.yaml ./mvcp-adobe-service-b/src/main/resources/devops
+helm install --name marcelo-adobe-service-b3 --namespace marcelo-test -f values3.yaml ./mvcp-adobe-service-b/src/main/resources/devops
+```
+
+Then update you ReverseProxy settings (values.yaml), adding the above services and purge/install again the proxy:
+```bash
+helm del --purge marcelo-adobe-reverse-proxy
+helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f values.yaml .
+```
+
+### Using K8s Port-forward + cUrl
+```bash
+kubectl port-forward -n marcelo-test svc/marcelo-adobe-test 8888:8888
+curl -XGET -H "Host: a.my-services.com" http://localhost:8888/marcelo/test/15
+curl -XGET -H "Host: b.my-services.com" http://localhost:8888/marcelo/serviceb/15
+```
+response:
+>{"idServiceA": 15}
+
+
+## Monitoring SLIs
 
 #### For verifying overal performance of the application, you can deploy the monitoring part, which is done via Prometheus & Grafana:
 ```bash
@@ -91,41 +129,10 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 >docker.for.mac.host.internal:8080
 
 
-
-## Playing with the Reverse Proxy:
-
-### Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
-
-### Deploying Mock Services to a Kubernetes Cluster:
-
-#### Service A:
-```bash
-git clone https://github.com/marcelovcpereira/mvcp-adobe-service-a.git
-cd mvcp-adobe-service-a/src/main/resources/devops
-helm install --name marcelo-adobe-service-a --namespace marcelo-test -f values.yaml .
-```
-
-#### Service B:
-```bash
-git clone https://github.com/marcelovcpereira/mvcp-adobe-service-b.git
-cd mvcp-adobe-service-b/src/main/resources/devops
-helm install --name marcelo-adobe-service-b --namespace marcelo-test -f values.yaml .
-```
-
-### Using K8s Port-forward + cUrl
-```bash
-kubectl port-forward -n marcelo-test svc/marcelo-adobe-test 8888:8888
-curl -XGET -H "Host: a.my-services.com" http://localhost:8888/marcelo/test/15
-curl -XGET -H "Host: b.my-services.com" http://localhost:8888/marcelo/serviceb/15
-```
-response:
->{"idServiceA": 15}
-
-
 ## Improvements:
 - Implement more Strategies of load balancing
 - Increase test coverage
-- Externalize the configuration of the "interval of polling servers"
+- Externalize the configuration of the "interval of polling servers" (currently: 10s)
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
 - Configure Swagger for documenting the API
