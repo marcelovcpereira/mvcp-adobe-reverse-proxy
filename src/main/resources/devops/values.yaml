@@ -1,7 +1,8 @@
 marceloAdobeTest:
   appName: marcelo-adobe-test
+  namespace: marcelo-test
   image:
-    repository: marcelovcpereira/adobe-test:1.0.2
+    repository: marcelovcpereira/adobe-test:1.0.4
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -22,7 +23,7 @@ marceloAdobeTest:
 #######################
   proxy:
     listen:
-      address: "127.0.0.1"
+      address: 127.0.0.1
       port: 8888
     services:
       - name: my-service-a
@@ -31,17 +32,19 @@ marceloAdobeTest:
         hosts:
           - address: "marcelo-adobe-service-a.marcelo-test.svc.cluster.local"
             port: 9000
-      # - name: b-service
-      #   domain: b.my-services.com
-      #   strategy: round_robin
-      #   hosts:
-      #     - address: "10.0.0.0"
-      #       port: 8002
-      #     - address: "10.0.0.0"
-      #       port: 8003
+      - name: b-service
+        domain: b.my-services.com
+        strategy: round_robin
+        hosts:
+          - address: "marcelo-adobe-service-b.marcelo-test.svc.cluster.local"
+            port: 8000
+          - address: "marcelo-adobe-service-b2.marcelo-test.svc.cluster.local"
+            port: 8001
+          - address: "marcelo-adobe-service-b3.marcelo-test.svc.cluster.local"
+            port: 8002
     exposedManagementEndpoints: health,info,metrics,prometheus
     monitoring:
       prometheus:
-        port: 9999
+        port: 9090
       grafana:
         port: 9898

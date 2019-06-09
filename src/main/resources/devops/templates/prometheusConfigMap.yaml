@@ -16,4 +16,4 @@ data:
         metrics_path: /actuator/prometheus
         scrape_interval: 10s
         static_configs:
-          - targets: ['marcelo-adobe-test.marcelo-test.svc.cluster.local:{{.Values.marceloAdobeTest.proxy.listen.port}}']
+          - targets: ['{{.Values.marceloAdobeTest.appName}}.{{.Values.marceloAdobeTest.namespace}}.svc.cluster.local:{{.Values.marceloAdobeTest.proxy.listen.port}}']

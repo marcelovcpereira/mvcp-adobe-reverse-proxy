@@ -57,20 +57,36 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 >docker.for.mac.host.internal:8080
 
 
-## Overall Flow
-```mermaid
-graph LR
-A[HTTP Requests] --> B((Reverse Proxy))
-B --> C(Service A)
-B --> D(Service B)
-B --> E(Service C)
-C --> F(Endpoint A1)
-C --> G(Endpoint A2)
-D --> H(Endpoint B1)
-E --> I(Endpoint C1)
-E --> J(Endpoint C2)
-E --> K(Endpoint C3)
+
+## Playing with the Reverse Proxy:
+
+### Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
+
+### Deploying Mock Services to a Kubernetes Cluster:
+
+#### Service A:
+```bash
+git clone https://github.com/marcelovcpereira/mvcp-adobe-service-a.git
+cd mvcp-adobe-service-a/src/main/resources/devops
+helm install --name marcelo-adobe-service-a --namespace marcelo-test -f values.yaml .
 ```
+
+#### Service B:
+```bash
+git clone https://github.com/marcelovcpereira/mvcp-adobe-service-b.git
+cd mvcp-adobe-service-b/src/main/resources/devops
+helm install --name marcelo-adobe-service-b --namespace marcelo-test -f values.yaml .
+```
+
+### Using K8s Port-forward + cUrl
+```bash
+kubectl port-forward -n marcelo-test svc/marcelo-adobe-test 8888:8888
+curl -XGET -H "Host: a.my-services.com" http://localhost:8888/marcelo/test/15
+curl -XGET -H "Host: b.my-services.com" http://localhost:8888/marcelo/serviceb/15
+```
+response:
+>{"idServiceA": 15}
+
 
 ## Improvements:
 - Implement more Strategies of load balancing
