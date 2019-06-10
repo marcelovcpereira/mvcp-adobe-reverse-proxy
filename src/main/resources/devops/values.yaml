@@ -25,7 +25,6 @@ marceloAdobeTest:
 #######################
   proxy:
     listen:
-      #do not bind to 127.0.0.1 or containar won't be accessible from outside
       address: 0.0.0.0
       port: 9999
     services:

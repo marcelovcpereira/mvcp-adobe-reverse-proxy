@@ -23,9 +23,223 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": null,
+      "id": 1,
       "links": [],
       "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 10,
+            "x": 0,
+            "y": 0
+          },
+          "id": 12,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "rate(http_server_requests_seconds_count[5m])*60",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{uri}}{{status}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Requests Per Minute",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 10,
+            "y": 0
+          },
+          "id": 6,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "rate(http_server_requests_seconds_max{uri!~\"/actuator/.*\"}[5m])*1000*60",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{status}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "AVG Latency Per Minute (in ms)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 0
+          },
+          "id": 4,
+          "links": [],
+          "options": {
+            "maxValue": 100,
+            "minValue": 0,
+            "showThresholdLabels": true,
+            "showThresholdMarkers": true,
+            "thresholds": [
+              {
+                "color": "#7EB26D",
+                "index": 0,
+                "value": null
+              }
+            ],
+            "valueMappings": [],
+            "valueOptions": {
+              "decimals": null,
+              "prefix": "",
+              "stat": "avg",
+              "suffix": "%",
+              "unit": "none"
+            }
+          },
+          "targets": [
+            {
+              "expr": "system_cpu_usage*100",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CPU Usage",
+          "type": "gauge"
+        },
         {
           "cacheTimeout": null,
           "colorBackground": false,
@@ -47,7 +261,7 @@ data:
             "h": 4,
             "w": 6,
             "x": 0,
-            "y": 0
+            "y": 8
           },
           "id": 10,
           "interval": null,
@@ -109,145 +323,19 @@ data:
           "valueName": "current"
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 4,
-            "x": 6,
-            "y": 0
-          },
-          "id": 2,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "expr": "http_server_requests_seconds_count{uri=\"/**\"}",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "",
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Request Count",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "avg"
-        },
-        {
-          "gridPos": {
-            "h": 4,
-            "w": 5,
-            "x": 10,
-            "y": 0
-          },
-          "id": 4,
-          "links": [],
-          "options": {
-            "maxValue": 100,
-            "minValue": 0,
-            "showThresholdLabels": true,
-            "showThresholdMarkers": true,
-            "thresholds": [
-              {
-                "color": "#7EB26D",
-                "index": 0,
-                "value": null
-              }
-            ],
-            "valueMappings": [],
-            "valueOptions": {
-              "decimals": null,
-              "prefix": "",
-              "stat": "avg",
-              "suffix": "%",
-              "unit": "none"
-            }
-          },
-          "targets": [
-            {
-              "expr": "system_cpu_usage*100",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "CPU Usage",
-          "type": "gauge"
-        },
-        {
           "aliasColors": {},
           "bars": false,
+          "cacheTimeout": null,
           "dashLength": 10,
           "dashes": false,
           "fill": 1,
           "gridPos": {
-            "h": 6,
-            "w": 10,
-            "x": 0,
-            "y": 4
+            "h": 4,
+            "w": 4,
+            "x": 6,
+            "y": 8
           },
-          "id": 6,
+          "id": 2,
           "legend": {
             "avg": false,
             "current": false,
@@ -271,11 +359,11 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "http_server_requests_seconds_max{uri!~\"/actuator/.*\"}*1000",
+              "expr": "http_server_requests_seconds_count{uri=\"/**\"}",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "",
+              "legendFormat": "{{status}}",
               "refId": "A"
             }
           ],
@@ -283,7 +371,7 @@ data:
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Latency (ms)",
+          "title": "Request Count",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -330,7 +418,7 @@ data:
             "h": 6,
             "w": 10,
             "x": 10,
-            "y": 4
+            "y": 8
           },
           "id": 8,
           "legend": {
@@ -360,7 +448,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "",
+              "legendFormat": "{{id}}",
               "refId": "A"
             }
           ],
@@ -406,6 +494,7 @@ data:
           }
         }
       ],
+      "refresh": "5s",
       "schemaVersion": 18,
       "style": "dark",
       "tags": [],
@@ -413,7 +502,7 @@ data:
         "list": []
       },
       "time": {
-        "from": "now-5m",
+        "from": "now-15m",
         "to": "now"
       },
       "timepicker": {
@@ -443,6 +532,6 @@ data:
       },
       "timezone": "",
       "title": "Reverse Proxy Visualization",
-      "uid": null,
-      "version": 0
+      "uid": "etZQmM7Wk",
+      "version": 1
     }

@@ -75,7 +75,7 @@ The above command will deploy the Reverse Proxy, Prometheus, Grafana, Redis, Ser
 ### Using K8s Port-forward + cUrl
 >Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
 ```bash
-kubectl port-forward -n marcelo-test svc/marcelo-adobe-test 9999:9999
+kubectl port-forward -n marcelo-test svc/marcelo-adobe-reverse-proxy 9999:9999
 curl -XGET -H "Host: a.my-services.com" http://localhost:9999/marcelo/test/15
 curl -XGET -H "Host: b.my-services.com" http://localhost:9999/marcelo/serviceb/15
 curl -H "Host: a.my-services.com" -H "Cache-Control: max-age=100" localhost:9999/marcelo/test/12345
@@ -92,7 +92,7 @@ Example response:
 
 #### Visiting Prometheus dashboard:
 ```bash
-kubectl port-forward -n marcelo-test svc/prometheus-service 9999:80
+kubectl port-forward -n marcelo-test svc/prometheus-service 7777:80
 ```
 After the port forward, access in your browser: http://localhost:9999
 
@@ -108,8 +108,27 @@ Then, access in your browser: http://localhost:9898
 Open the dashboard: Reverse Proxy Visualization
 You can change the timeframe to last 5 minutes and activate refreshing every 5s.
 
-With the visualization opened you can then access terminal and execute several requests or maybe use siege (https://www.joedog.org/siege-manual/) to load test the proxy.
+With the visualization opened you can then access terminal and execute several requests or maybe use siege as shown below:
 
+##### Firing 10 req/s (600/min) during 5 minutes to Mock Service A without never touching cache
+```bash
+siege -c 10 -i -t 5M -f /Users/marcelopereira/Documents/workspace/mvcp-adobe-reverse-proxy/siege_urls_a.txt -H "Host: a.my-services.com" -H "Cache-Control: no-cache"
+```
+
+
+##### Firing 5 req/s (300/min) during 3 minutes to Mock Service B without never touching cache
+```bash
+siege -c 5 -i -t 3M -f /Users/marcelopereira/Documents/workspace/mvcp-adobe-reverse-proxy/siege_urls_b.txt -H "Host: b.my-services.com" -H "Cache-Control: no-cache"
+```
+
+### Calculation:
+```bash
+Requests Per Minute: rate(http_server_requests_seconds_count[5m])*60
+Memory Usage: jvm_memory_used_bytes{area="heap",job="reverse-proxy"}
+Real time CPU Usage: system_cpu_usage*100
+Average Latency/min (ms): rate(http_server_requests_seconds_max{uri!~"/actuator/.*"}[5m])*1000*60
+```
+###
 
 #### To clean helm installations:
 ```bash
@@ -121,6 +140,7 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 
 
 ## Improvements:
+- Specify SLIs calculation in README.md
 - Create tests for Cache Control 
 - Implement more Cache Control headers
 - Make Cache Control 100% compliant to specification
@@ -145,3 +165,6 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 >https://github.com/helm/charts/tree/master/stable/redis
 >https://stackoverflow.com/questions/47668793/helm-generate-comma-separated-list
 >https://itnext.io/simple-redis-cache-on-kubernetes-with-prometheus-metrics-8667baceab6b
+>https://groups.google.com/forum/#!topic/prometheus-users/MkyxLiVsJz0
+>https://blog.softwaremill.com/practical-monitoring-with-prometheus-ee09a1dd5527
+>https://www.joedog.org/siege-manual/
