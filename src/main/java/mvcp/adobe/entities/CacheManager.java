@@ -49,7 +49,7 @@ public class CacheManager {
         try {
             stringRedisTemplate.opsForValue().set(key, value);
         } catch (RedisConnectionException | RedisConnectionFailureException rce) {
-            throw new CacheNotAvailableException("The cache server is inaccessible");
+            throw new CacheNotAvailableException("The cache server is inaccessible: " + rce.getMessage());
          }
     }
 
@@ -63,7 +63,7 @@ public class CacheManager {
         try {
             return stringRedisTemplate.opsForValue().get(key);
         } catch (RedisConnectionException | RedisConnectionFailureException re) {
-            throw new CacheNotAvailableException("The cache server is inaccessible");
+            throw new CacheNotAvailableException("The cache server is inaccessible: " + re.getMessage());
         }
     }
 

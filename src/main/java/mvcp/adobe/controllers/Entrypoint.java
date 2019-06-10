@@ -64,6 +64,7 @@ public class Entrypoint {
                 }
             } catch (CacheNotAvailableException cnae) {
                 logger.info("+++++Cache server not available. Executing request+++++");
+                logger.info("+++++TRACE: (" + cnae.getMessage() + ")+++++");
                 response = proxy.processRequest(req);
             }
 
