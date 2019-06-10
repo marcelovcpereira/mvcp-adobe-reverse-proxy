@@ -1,0 +1,12 @@
+#Reference: https://linuxacademy.com/blog/kubernetes/running-prometheus-on-kubernetes/
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+spec:
+  selector:
+    app: prometheus-server
+  type: NodePort
+  ports:
+    - port: {{.Values.marceloAdobeTest.proxy.monitoring.prometheus.port}}
+      targetPort: 9090
