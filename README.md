@@ -140,7 +140,6 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 
 
 ## Improvements:
-- Specify SLIs calculation in README.md
 - Create tests for Cache Control 
 - Implement more Cache Control headers
 - Make Cache Control 100% compliant to specification
