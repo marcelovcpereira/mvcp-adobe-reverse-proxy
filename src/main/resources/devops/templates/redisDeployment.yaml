@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{.Values.marceloAdobeTest.redis.name}}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{.Values.marceloAdobeTest.redis.name}}
+    spec:
+      volumes:
+        - name: host-sys
+          hostPath:
+            path: /sys
+      initContainers:
+        - name: disable-thp
+          image: redis:4.0-alpine 
+          volumeMounts:
+            - name: host-sys
+              mountPath: /host-sys
+          command: ["sh", "-c", "echo never > /host-sys/kernel/mm/transparent_hugepage/enabled"]
+      containers:
+      - name: redis
+        image: redis:4.0-alpine
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 250m
+            memory: 500Mi
+        ports:
+        - containerPort: {{.Values.marceloAdobeTest.redis.port}}

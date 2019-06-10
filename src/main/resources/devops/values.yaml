@@ -1,8 +1,8 @@
 marceloAdobeTest:
-  appName: marcelo-adobe-test
+  appName: marcelo-adobe-reverse-proxy
   namespace: marcelo-test
   image:
-    repository: marcelovcpereira/adobe-test:1.0.4
+    repository: marcelovcpereira/adobe-test:1.0.9
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -12,11 +12,13 @@ marceloAdobeTest:
       cpu: "1500m"
       memory: "4096Mi"
 
-#########################
-# Environment Variables #
-#########################
+###############################################
+# Environment Variables for the Reverse Proxy #
+###############################################
   configMap:
     REVERSE_PROXY_ENVIRONMENT: dev
+    REDIS_HOST: "marcelo-adobe-redis.marcelo-test.svc.cluster.local"
+    REDIS_PORT: 6379
 
 #######################
 # PROXY CONFIGURATION #
@@ -31,18 +33,20 @@ marceloAdobeTest:
         domain: a.my-services.com
         strategy: random
         hosts:
-          - address: "marcelo-adobe-service-a.marcelo-test.svc.cluster.local"
+          - address: "marcelo-adobe-service-a0.marcelo-test.svc.cluster.local"
+            port: 9000
+          - address: "marcelo-adobe-service-a1.marcelo-test.svc.cluster.local"
             port: 9000
       - name: b-service
         domain: b.my-services.com
         strategy: round_robin
         hosts:
-          - address: "marcelo-adobe-service-b.marcelo-test.svc.cluster.local"
+          - address: "marcelo-adobe-service-b0.marcelo-test.svc.cluster.local"
+            port: 8000
+          - address: "marcelo-adobe-service-b1.marcelo-test.svc.cluster.local"
             port: 8000
           - address: "marcelo-adobe-service-b2.marcelo-test.svc.cluster.local"
-            port: 8001
-          - address: "marcelo-adobe-service-b3.marcelo-test.svc.cluster.local"
-            port: 8002
+            port: 8000
     exposedManagementEndpoints: health,info,metrics,prometheus
 ############################
 # MONITORING CONFIGURATION #
@@ -111,3 +115,30 @@ marceloAdobeTest:
           enabled: true
           label: grafana_datasource
           searchNamespace: null
+################################
+## Mock Services Configuration #
+#################################
+  serviceA:
+    enabled: true
+    replicas: 2
+    name: marcelo-adobe-service-a
+    image:
+      repository: marcelovcpereira/adobe-test:servicea
+      pullPolicy: IfNotPresent
+    configMap:
+      SERVICE_A_PORT: 9000
+  serviceB:
+    enabled: true
+    replicas: 3
+    name: marcelo-adobe-service-b
+    image:
+      repository: marcelovcpereira/adobe-test:serviceb
+      pullPolicy: IfNotPresent
+    configMap:
+      SERVICE_B_PORT: 8000
+#######################
+# CACHE CONFIGURATION #
+#######################
+  redis:
+    name: marcelo-adobe-redis
+    port: 6379

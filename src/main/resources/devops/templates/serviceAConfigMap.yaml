@@ -1,0 +1,14 @@
+{{- if .Values.marceloAdobeTest.serviceA.enabled -}}
+{{- $replicas := .Values.marceloAdobeTest.serviceA.replicas | int }}
+{{- range $counter := until $replicas }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Values.marceloAdobeTest.serviceA.name }}{{$counter}}
+data:
+  {{- range $key, $value := $.Values.marceloAdobeTest.serviceA.configMap }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+---
+{{- end }}
+{{- end }}

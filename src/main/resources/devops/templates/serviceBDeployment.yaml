@@ -1,0 +1,33 @@
+{{- if .Values.marceloAdobeTest.serviceB.enabled -}}
+{{- $replicas := .Values.marceloAdobeTest.serviceB.replicas | int }}
+{{- range $counter := until $replicas }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Values.marceloAdobeTest.serviceB.name }}{{$counter}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $.Values.marceloAdobeTest.serviceB.name }}{{$counter}}
+  template:
+    metadata:
+      labels:
+        app: {{ $.Values.marceloAdobeTest.serviceB.name }}{{$counter}}
+    spec:
+      containers:
+        - image: {{ $.Values.marceloAdobeTest.serviceB.image.repository }}
+          name: {{ $.Values.marceloAdobeTest.serviceB.name }}
+          env:
+            {{- range $key, $value := $.Values.marceloAdobeTest.serviceB.configMap }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.marceloAdobeTest.serviceB.name }}{{$counter}}
+                  key: {{ $key }}
+            {{- end }}
+          ports:
+            - containerPort: {{ $.Values.marceloAdobeTest.serviceB.configMap.SERVICE_B_PORT }}
+              name: default
+---
+{{- end }}
+{{- end }}

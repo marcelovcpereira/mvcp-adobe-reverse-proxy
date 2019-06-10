@@ -1,0 +1,16 @@
+{{- if .Values.marceloAdobeTest.serviceB.enabled -}}
+{{- $replicas := .Values.marceloAdobeTest.serviceB.replicas | int }}
+{{- range $counter := until $replicas }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Values.marceloAdobeTest.serviceB.name }}{{ $counter }}
+spec:
+  ports:
+    - port: {{ $.Values.marceloAdobeTest.serviceB.configMap.SERVICE_B_PORT }}
+  selector:
+    app: {{ $.Values.marceloAdobeTest.serviceB.name }}{{ $counter }}
+  clusterIP: None
+---
+{{- end }}
+{{- end }}

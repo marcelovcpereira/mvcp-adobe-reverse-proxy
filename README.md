@@ -66,28 +66,11 @@ Helper for executing HTTP requests in remote hosts.
 git clone https://github.com/marcelovcpereira/mvcp-adobe-reverse-proxy.git
 helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/values.yaml ./mvcp-adobe-reverse-proxy/src/main/resources/devops
 ```
-The above command will deploy the Reverse Proxy, Prometheus & Grafana.
+The above command will deploy the Reverse Proxy, Prometheus, Grafana, Redis, ServiceA & Service B based on the configuration found on file:
+>./mvcp-adobe-reverse-proxy/src/main/resources/devops/values.yaml
 
 
 ## Playing with the Reverse Proxy:
-
-### Deploying Mock Services to the Kubernetes Cluster:
-
-#### Service A (3 values prepared for testing load balance strategies):
-```bash
-git clone https://github.com/marcelovcpereira/mvcp-adobe-service-a.git
-helm install --name marcelo-adobe-service-a --namespace marcelo-test -f ./mvcp-adobe-service-a/src/main/resources/devops/values.yaml ./mvcp-adobe-service-a/src/main/resources/devops
-helm install --name marcelo-adobe-service-a2 --namespace marcelo-test -f ./mvcp-adobe-service-a/src/main/resources/devops/values2.yaml ./mvcp-adobe-service-a/src/main/resources/devops
-helm install --name marcelo-adobe-service-a3 --namespace marcelo-test -f ./mvcp-adobe-service-a/src/main/resources/devops/values3.yaml ./mvcp-adobe-service-a/src/main/resources/devops
-```
-
-#### Service B (3 values prepared for testing load balance strategies):
-```bash
-git clone https://github.com/marcelovcpereira/mvcp-adobe-service-b.git
-helm install --name marcelo-adobe-service-b --namespace marcelo-test -f ./mvcp-adobe-service-b/src/main/resources/devops/values.yaml ./mvcp-adobe-service-b/src/main/resources/devops
-helm install --name marcelo-adobe-service-b2 --namespace marcelo-test -f ./mvcp-adobe-service-b/src/main/resources/devops/values2.yaml ./mvcp-adobe-service-b/src/main/resources/devops
-helm install --name marcelo-adobe-service-b3 --namespace marcelo-test -f ./mvcp-adobe-service-b/src/main/resources/devops/values3.yaml ./mvcp-adobe-service-b/src/main/resources/devops
-```
 
 ### Using K8s Port-forward + cUrl
 >Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
@@ -95,8 +78,11 @@ helm install --name marcelo-adobe-service-b3 --namespace marcelo-test -f ./mvcp-
 kubectl port-forward -n marcelo-test svc/marcelo-adobe-test 9999:9999
 curl -XGET -H "Host: a.my-services.com" http://localhost:9999/marcelo/test/15
 curl -XGET -H "Host: b.my-services.com" http://localhost:9999/marcelo/serviceb/15
+curl -H "Host: a.my-services.com" -H "Cache-Control: max-age=100" localhost:9999/marcelo/test/12345
+curl -H "Host: a.my-services.com" -H "Cache-Control: no-cache" localhost:9999/marcelo/test/12345
 ```
-response:
+
+Example response:
 >{"idServiceA": 15}
 
 
@@ -111,13 +97,14 @@ kubectl port-forward -n marcelo-test svc/prometheus-service 9999:80
 After the port forward, access in your browser: http://localhost:9999
 
 
-#### Visiting Grafana dashboard:
+#### Visiting Grafana dashboard for metrics visualization:
 ```bash
 kubectl port-forward -n marcelo-test svc/marcelo-adobe-grafana 9898:9898
 ```
 Then, access in your browser: http://localhost:9898
-User: admin
-Password: admin
+>User: (configurable on values.yaml:monitoring.adminUser)
+>Password: (configurable on values.yaml:monitoring.adminPassword)
+
 Open the dashboard: Reverse Proxy Visualization
 You can change the timeframe to last 5 minutes and activate refreshing every 5s.
 
@@ -127,19 +114,6 @@ With the visualization opened you can then access terminal and execute several r
 #### To clean helm installations:
 ```bash
 helm del --purge marcelo-adobe-reverse-proxy
-helm del --purge marcelo-adobe-service-a
-helm del --purge marcelo-adobe-service-a2
-helm del --purge marcelo-adobe-service-a3
-helm del --purge marcelo-adobe-service-b
-helm del --purge marcelo-adobe-service-b2
-helm del --purge marcelo-adobe-service-b3
-```
-
-
-## Outside k8s (only for debugging)
-For running the reverse-proxy as a local docker image, use the following command:
-```
-docker run -p 9090:9090 -e REVERSE_PROXY_PORT=9090 -e REVERSE_PROXY_SERVICES="ServiceA,servicea.com,RANDOM,localhost:8000,localhost:8001,localhost:8002;ServiceB,serviceb.com,ROUND_ROBIN,localhost:9000"  marcelovcpereira/adobe-test:latest
 ```
 
 PS: If you use MacOS & your docker container needs to access a local service/port, do not bind to localhost or 127.0.0.1, instead use internal docker DNS, e.g:
@@ -147,14 +121,27 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 
 
 ## Improvements:
+- Create tests for Cache Control 
 - Implement more Cache Control headers
 - Make Cache Control 100% compliant to specification
+- Configure credentials for acessing the Cache
+- Generate and expose metrics of Cache (miss/hists/uptime/etc)
+- Implement cluster version of Redis for better scalability
+- Externalize a toggle for enabling/disabling Cache deployment
 - Implement more Strategies of load balancing
 - Increase test coverage
-- Externalize the configuration of the "interval of polling servers" (currently: 10s)
+- Externalize the configuration "polling interval" (currently: 10s)
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
 - Configure Prometheus Alert Manager
-- Generate/expose metrics from attached Services (availability, latency, etc)
-- Add authentication for accessing visualization
+- Generate and expose metrics from attached Services (availability, latency, etc)
 - Improve marshalling/unmarshalling of message in proxy & cache
+
+
+# References:
+>https://helm.sh/docs/chart_best_practices/
+>https://github.com/helm/charts/tree/master/stable/grafana
+>https://github.com/helm/charts/tree/master/stable/prometheus
+>https://github.com/helm/charts/tree/master/stable/redis
+>https://stackoverflow.com/questions/47668793/helm-generate-comma-separated-list
+>https://itnext.io/simple-redis-cache-on-kubernetes-with-prometheus-metrics-8667baceab6b
