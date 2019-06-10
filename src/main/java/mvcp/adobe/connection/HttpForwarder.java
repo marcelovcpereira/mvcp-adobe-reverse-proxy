@@ -14,7 +14,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Executes HTTP requests from a Request Object, forwarding its contents, then returns the HTTP Response
+ * back to the caller.
+ * 
+ */
 public class HttpForwarder {
     public static final Logger logger = (Logger) LoggerFactory.getLogger(HttpForwarder.class);
 

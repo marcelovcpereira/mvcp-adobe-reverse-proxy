@@ -46,7 +46,7 @@ Helper for executing HTTP requests in remote hosts.
 git clone https://github.com/marcelovcpereira/mvcp-adobe-reverse-proxy.git
 helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/values.yaml ./mvcp-adobe-reverse-proxy/src/main/resources/devops
 ```
-The above command will deploy the Reverse Proxy only. For deploying all features, see section below "Playing with the Reverse Proxy".
+The above command will deploy the Reverse Proxy, Prometheus & Grafana.
 
 
 ## Playing with the Reverse Proxy:
@@ -82,30 +82,20 @@ response:
 
 ## Monitoring SLIs
 
-#### For verifying overal performance of the application, you can deploy the monitoring part, which is done via Prometheus & Grafana:
->the commands below are considering you current work directory as: ./mvcp-adobe-reverse-proxy/src/main/resources/devops
-```bash
-helm install --name marcelo-adobe-prometheus --namespace marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/prometheus-values.yaml stable/prometheus
-helm install --name marcelo-adobe-grafana --namespace marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/grafana-values.yaml stable/grafana
-```
-
-#### Then, install the grafana dashboard:
-```bash
-kubectl apply -n marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/grafanaConfigMap.yaml
-```
+### For verifying overal performance of the application, you can use Prometheus & Grafana:
 
 #### Visiting Prometheus dashboard:
 ```bash
-kubectl port-forward -n marcelo-test svc/marcelo-adobe-prometheus-server 9090:80
+kubectl port-forward -n marcelo-test svc/prometheus-service 9999:80
 ```
-After the port forward, access in your browser: http://localhost:8080
+After the port forward, access in your browser: http://localhost:9999
 
 
 #### Visiting Grafana dashboard:
 ```bash
-kubectl port-forward -n marcelo-test svc/marcelo-adobe-grafana 8080:80
+kubectl port-forward -n marcelo-test svc/marcelo-adobe-grafana 9898:9898
 ```
-Then, access in your browser: http://localhost:8080
+Then, access in your browser: http://localhost:9898
 User: admin
 Password: admin
 Open the dashboard: Reverse Proxy Visualization
@@ -117,8 +107,6 @@ With the visualization opened you can then access terminal and execute several r
 #### To clean helm installations:
 ```bash
 helm del --purge marcelo-adobe-reverse-proxy
-helm del --purge marcelo-adobe-grafana
-helm del --purge marcelo-adobe-prometheus 
 helm del --purge marcelo-adobe-service-a
 helm del --purge marcelo-adobe-service-a2
 helm del --purge marcelo-adobe-service-a3
@@ -145,8 +133,6 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 - Externalize the configuration of the "interval of polling servers" (currently: 10s)
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
-- Embed Prometheus deployment into the same chart
-- Embed Grafana deployment into the same chart
 - Configure Prometheus Alert Manager
 - Generate/expose metrics from attached Services (availability, latency, etc)
 - Add authentication for accessing visualization

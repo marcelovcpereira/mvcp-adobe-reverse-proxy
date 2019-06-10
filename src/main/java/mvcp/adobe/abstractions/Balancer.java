@@ -11,7 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Responsible for trying to fulfil a request using one of the available Endpoints. It tries all available Endpoints until
+ * some of them fulfils the request or all fail. The strategy of electing which Endpoint should be the next candidate for
+ * attempting the request depends on the routing implementation of the subclasses.
+ * 
+ */
 public abstract class Balancer {
     public static final Logger logger = (Logger) LoggerFactory.getLogger(Balancer.class);
     protected List<Endpoint> endpoints;

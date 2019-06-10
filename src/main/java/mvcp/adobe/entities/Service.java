@@ -9,6 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * Represents a group of Endpoints that are responding as replicas of an Application.
+ * Each service can have its own load balancing strategies for routing the requests. 
+ * 
+ */
 public class Service implements IServiceHandler {
     public static final Logger logger = (Logger) LoggerFactory.getLogger(Service.class);
 

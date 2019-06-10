@@ -1,5 +1,13 @@
 package mvcp.adobe.entities;
-
+/**
+ * Represents a server host & port configuration that is responding for a certain Service.
+ * Each Endpoint has a status value to represent its health:
+ * 
+ * PENDING - All newly initialized Endpoints
+ * ACTIVE - All endpoints that have a successful last request
+ * SUSPENDED - All endpoints that have a failed last request
+ * BLOCKED - Black listed 
+ */
 public class Endpoint {
 
     private String ip;

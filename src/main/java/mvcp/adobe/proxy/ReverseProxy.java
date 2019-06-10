@@ -17,7 +17,13 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * The heart of the flow, the proxy contains the list of the Services that are attached to it. It is responsible for caching 
+ * mechanisms, circuit breaker features and load balancing.
+ * After initialized, the ReverseProxy starts polling its service's endpoints each 10 seconds for re-evaluating their health. 
+ * It marks them as Suspended or Active, depending on the result.
+ * 
+ */
 @Component
 public class ReverseProxy {
 

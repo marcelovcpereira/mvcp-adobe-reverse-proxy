@@ -48,8 +48,9 @@ marceloAdobeTest:
 # MONITORING CONFIGURATION #
 ############################
     monitoring:
-      name: marcelo-adobe-grafana
       port: 9898
+      name: marcelo-adobe-grafana
+      prometheusPort: 80
       service:
         type: ClusterIP
       adminUser: admin
@@ -94,7 +95,7 @@ marceloAdobeTest:
           datasources:
             - name: Prometheus
               type: prometheus
-              url: http://marcelo-adobe-prometheus-server.marcelo-test.svc.cluster.local:80
+              url: http://prometheus-service.marcelo-test.svc.cluster.local:80
               access: proxy
               isDefault: true
       sidecar:
