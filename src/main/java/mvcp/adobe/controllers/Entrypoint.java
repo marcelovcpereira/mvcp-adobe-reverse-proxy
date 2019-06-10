@@ -1,6 +1,8 @@
 package mvcp.adobe.controllers;
 
+import mvcp.adobe.entities.CacheManager;
 import mvcp.adobe.entities.Request;
+import mvcp.adobe.exceptions.CacheNotAvailableException;
 import mvcp.adobe.exceptions.NoAvailableEndpointsException;
 import mvcp.adobe.proxy.ReverseProxy;
 import mvcp.adobe.entities.Response;
@@ -31,6 +33,9 @@ public class Entrypoint {
     @Autowired
     private ReverseProxy proxy;
 
+    @Autowired
+    private CacheManager cache;
+
 
     /**
      * Captures all incoming HTTP requests.
@@ -47,18 +52,31 @@ public class Entrypoint {
     public ResponseEntity<String> get(@RequestBody(required = false) Map<String, String> body, HttpServletRequest r) {
         try {
             Request req = Request.fromContextRequest(r, body);
-            Response res = proxy.processRequest(req);
+            Response response = null;
+            try {
+                response = cache.getCached(req);
+                if (response != null) {
+                    logger.info("+++++CACHE HIT+++++");
+                } else {
+                    logger.info("+++++CACHE MISS+++++");
+                    response = proxy.processRequest(req);
+                    cache.store(req, response);
+                }
+            } catch (CacheNotAvailableException cnae) {
+                logger.info("+++++Cache server not available. Executing request+++++");
+                response = proxy.processRequest(req);
+            }
 
             HttpHeaders headers = new HttpHeaders();
-            if (res.getHeaders() != null) {
-                for (String key : res.getHeaders().keySet()) {
-                    String value = res.getHeaders().get(key);
+            if (response.getHeaders() != null) {
+                for (String key : response.getHeaders().keySet()) {
+                    String value = response.getHeaders().get(key);
                     if (key == null) continue;
                     headers.set(key, value);
                 }
             }
 
-            return new ResponseEntity<>(res.getBody(), headers, HttpStatus.resolve(res.getStatus()));
+            return new ResponseEntity<>(response.getBody(), headers, HttpStatus.resolve(response.getStatus()));
         } catch (Exception e) {
             e.printStackTrace();
         } catch (ServiceHostNotFoundException e) {

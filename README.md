@@ -13,6 +13,23 @@ mechanisms, circuit breaker features and load balancing.
 After initialized, the ReverseProxy starts polling its service's endpoints each 10 seconds for re-evaluating their health. 
 It marks them as Suspended or Active, depending on the result.
 
+**CacheManager**
+Manages HTTP Cache Control logic (Not 100% compliant).
+Current implemented properties: no-cache, no-store, private, max-age.
+Both the client (request) and the service (response) can return Cache Control headers.
+Below goes the Reverse Proxy behavior when each of them uses one of the implemented headers.
+  
+Behaviors on request:
+ * no-cache: Skips cache, execute query and then cache Response
+ * no-store: Skips cache, execute query and then cache Response
+ * private: Skips cache, execute query and then cache Response
+ * max-age: Validate if cached object is not older than max-age in seconds
+ 
+Behaviors on response:
+ * no-cache: Does not store Response on cache.
+ * no-store: Does not store Response on cache.
+ * private: Does not store Response on cache.
+ 
 **Service**
 Represents a group of Endpoints that are responding as replicas of an Application.
 Each service can have its own load balancing strategies for routing the requests. 
@@ -21,9 +38,12 @@ Each service can have its own load balancing strategies for routing the requests
 Represents a server host & port configuration that is responding for a certain Service.
 Each Endpoint has a status value to represent its health:
 >*PENDING* - All newly initialized Endpoints
-*ACTIVE* - All endpoints that have a successful last request
-*SUSPENDED* - All endpoints that have a failed last request
-*BLOCKED* - Black listed 
+
+>*ACTIVE* - All endpoints that have a successful last request
+
+>*SUSPENDED* - All endpoints that have a failed last request
+
+>*BLOCKED* - Black listed 
 
 **Balancer**
 Responsible for trying to fulfil a request using one of the available Endpoints. It tries all available Endpoints until
@@ -127,7 +147,8 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 
 
 ## Improvements:
-- Implement HTTP Cache Control
+- Implement more Cache Control headers
+- Make Cache Control 100% compliant to specification
 - Implement more Strategies of load balancing
 - Increase test coverage
 - Externalize the configuration of the "interval of polling servers" (currently: 10s)
@@ -136,3 +157,4 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 - Configure Prometheus Alert Manager
 - Generate/expose metrics from attached Services (availability, latency, etc)
 - Add authentication for accessing visualization
+- Improve marshalling/unmarshalling of message in proxy & cache
