@@ -44,7 +44,7 @@ Helper for executing HTTP requests in remote hosts.
 >After cloning, notice that inside the project folder there is a "mvcp-adobe-reverse-proxy/src/main/resources/devops" directory containing the necessary files for launching the application in a kubernetes cluster as shown below:
 ```bash
 git clone https://github.com/marcelovcpereira/mvcp-adobe-reverse-proxy.git
-helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f values.yaml .
+helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/values.yaml ./mvcp-adobe-reverse-proxy/src/main/resources/devops
 ```
 The above command will deploy the Reverse Proxy only. For deploying all features, see section below "Playing with the Reverse Proxy".
 
@@ -56,31 +56,25 @@ The above command will deploy the Reverse Proxy only. For deploying all features
 #### Service A (3 values prepared for testing load balance strategies):
 ```bash
 git clone https://github.com/marcelovcpereira/mvcp-adobe-service-a.git
-helm install --name marcelo-adobe-service-a --namespace marcelo-test -f values.yaml ./mvcp-adobe-service-a/src/main/resources/devops
-helm install --name marcelo-adobe-service-a2 --namespace marcelo-test -f values2.yaml ./mvcp-adobe-service-a/src/main/resources/devops
-helm install --name marcelo-adobe-service-a3 --namespace marcelo-test -f values3.yaml ./mvcp-adobe-service-a/src/main/resources/devops
+helm install --name marcelo-adobe-service-a --namespace marcelo-test -f ./mvcp-adobe-service-a/src/main/resources/devops/values.yaml ./mvcp-adobe-service-a/src/main/resources/devops
+helm install --name marcelo-adobe-service-a2 --namespace marcelo-test -f ./mvcp-adobe-service-a/src/main/resources/devops/values2.yaml ./mvcp-adobe-service-a/src/main/resources/devops
+helm install --name marcelo-adobe-service-a3 --namespace marcelo-test -f ./mvcp-adobe-service-a/src/main/resources/devops/values3.yaml ./mvcp-adobe-service-a/src/main/resources/devops
 ```
 
 #### Service B (3 values prepared for testing load balance strategies):
 ```bash
 git clone https://github.com/marcelovcpereira/mvcp-adobe-service-b.git
-helm install --name marcelo-adobe-service-b --namespace marcelo-test -f values.yaml ./mvcp-adobe-service-b/src/main/resources/devops
-helm install --name marcelo-adobe-service-b2 --namespace marcelo-test -f values2.yaml ./mvcp-adobe-service-b/src/main/resources/devops
-helm install --name marcelo-adobe-service-b3 --namespace marcelo-test -f values3.yaml ./mvcp-adobe-service-b/src/main/resources/devops
-```
-
-Then update you ReverseProxy settings (values.yaml), adding the above services and purge/install again the proxy:
-```bash
-helm del --purge marcelo-adobe-reverse-proxy
-helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f values.yaml .
+helm install --name marcelo-adobe-service-b --namespace marcelo-test -f ./mvcp-adobe-service-b/src/main/resources/devops/values.yaml ./mvcp-adobe-service-b/src/main/resources/devops
+helm install --name marcelo-adobe-service-b2 --namespace marcelo-test -f ./mvcp-adobe-service-b/src/main/resources/devops/values2.yaml ./mvcp-adobe-service-b/src/main/resources/devops
+helm install --name marcelo-adobe-service-b3 --namespace marcelo-test -f ./mvcp-adobe-service-b/src/main/resources/devops/values3.yaml ./mvcp-adobe-service-b/src/main/resources/devops
 ```
 
 ### Using K8s Port-forward + cUrl
 >Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
 ```bash
-kubectl port-forward -n marcelo-test svc/marcelo-adobe-test 8888:8888
-curl -XGET -H "Host: a.my-services.com" http://localhost:8888/marcelo/test/15
-curl -XGET -H "Host: b.my-services.com" http://localhost:8888/marcelo/serviceb/15
+kubectl port-forward -n marcelo-test svc/marcelo-adobe-test 9999:9999
+curl -XGET -H "Host: a.my-services.com" http://localhost:9999/marcelo/test/15
+curl -XGET -H "Host: b.my-services.com" http://localhost:9999/marcelo/serviceb/15
 ```
 response:
 >{"idServiceA": 15}
@@ -89,14 +83,15 @@ response:
 ## Monitoring SLIs
 
 #### For verifying overal performance of the application, you can deploy the monitoring part, which is done via Prometheus & Grafana:
+>the commands below are considering you current work directory as: ./mvcp-adobe-reverse-proxy/src/main/resources/devops
 ```bash
-helm install --name marcelo-adobe-prometheus --namespace marcelo-test -f prometheus-values.yaml stable/prometheus
-helm install --name marcelo-adobe-grafana --namespace marcelo-test -f grafana-values.yaml stable/grafana
+helm install --name marcelo-adobe-prometheus --namespace marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/prometheus-values.yaml stable/prometheus
+helm install --name marcelo-adobe-grafana --namespace marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/grafana-values.yaml stable/grafana
 ```
 
 #### Then, install the grafana dashboard:
 ```bash
-kubectl apply -n marcelo-test -f ./src/main/resources/devops/grafanaConfigMap.yaml
+kubectl apply -n marcelo-test -f ./mvcp-adobe-reverse-proxy/src/main/resources/devops/grafanaConfigMap.yaml
 ```
 
 #### Visiting Prometheus dashboard:
@@ -108,9 +103,16 @@ After the port forward, access in your browser: http://localhost:8080
 
 #### Visiting Grafana dashboard:
 ```bash
-kubectl port-forward  marcelo-test svc/marcelo-adobe-grafana 8080:80
+kubectl port-forward -n marcelo-test svc/marcelo-adobe-grafana 8080:80
 ```
-After the port forward, access in your browser: http://localhost:8080
+Then, access in your browser: http://localhost:8080
+User: admin
+Password: admin
+Open the dashboard: Reverse Proxy Visualization
+You can change the timeframe to last 5 minutes and activate refreshing every 5s.
+
+With the visualization opened you can then access terminal and execute several requests or maybe use siege (https://www.joedog.org/siege-manual/) to load test the proxy.
+
 
 #### To clean helm installations:
 ```bash
@@ -143,7 +145,8 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 - Externalize the configuration of the "interval of polling servers" (currently: 10s)
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
-- Embbed Prometheus deployment into the same root chart
-- Embbed Grafana deployment into the same root chart
-- Configure Alert Manager
+- Embed Prometheus deployment into the same chart
+- Embed Grafana deployment into the same chart
+- Configure Prometheus Alert Manager
 - Generate/expose metrics from attached Services (availability, latency, etc)
+- Add authentication for accessing visualization

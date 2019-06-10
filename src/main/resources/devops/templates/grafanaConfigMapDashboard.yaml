@@ -275,7 +275,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{uri}}",
+              "legendFormat": "",
               "refId": "A"
             }
           ],
@@ -360,7 +360,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{id}}",
+              "legendFormat": "",
               "refId": "A"
             }
           ],
@@ -446,4 +446,3 @@ data:
       "uid": null,
       "version": 0
     }
-

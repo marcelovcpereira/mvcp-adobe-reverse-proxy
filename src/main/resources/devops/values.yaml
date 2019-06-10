@@ -44,8 +44,69 @@ marceloAdobeTest:
           - address: "marcelo-adobe-service-b3.marcelo-test.svc.cluster.local"
             port: 8002
     exposedManagementEndpoints: health,info,metrics,prometheus
+############################
+# MONITORING CONFIGURATION #
+############################
     monitoring:
-      prometheus:
-        port: 9090
-      grafana:
-        port: 9898
+      name: marcelo-adobe-grafana
+      port: 9898
+      service:
+        type: ClusterIP
+      adminUser: admin
+      adminPassword: admin
+      image:
+        repository: grafana/grafana
+        tag: 6.0.1
+        pullPolicy: IfNotPresent
+      rbac:
+        create: true
+        namespaced: false
+        pspEnabled: true
+        pspUseAppArmor: true
+      serviceAccount:
+        create: true
+        name: default
+      ldap:
+          existingSecret: ""
+          config: ""
+      securityContext:
+        runAsUser: 472
+        fsGroup: 472
+      admin:
+        existingSecret: ""
+        userKey: admin-user
+        passwordKey: admin-password
+      grafana.ini:
+        paths:
+          data: /var/lib/grafana/data
+          logs: /var/log/grafana
+          plugins: /var/lib/grafana/plugins
+          provisioning: /etc/grafana/provisioning
+        analytics:
+          check_for_updates: true
+        log:
+          mode: console
+        grafana_net:
+          url: https://grafana.net
+      datasources:
+        datasources.yaml:
+          apiVersion: 1
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://marcelo-adobe-prometheus-server.marcelo-test.svc.cluster.local:80
+              access: proxy
+              isDefault: true
+      sidecar:
+        image: kiwigrid/k8s-sidecar:0.0.11
+        imagePullPolicy: IfNotPresent
+        resources:
+        dashboards:
+          enabled: true
+          label: grafana_dashboard
+          folder: /tmp/dashboards
+          searchNamespace: null
+        datasources:
+          enabled: true
+          label: grafana_datasource
+          searchNamespace: null

@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+  labels:
+    app: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+        release: {{ .Release.Name }}
+    spec:
+{{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
+      initContainers:
+{{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.enabled }}
+        - name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}-sc-datasources
+          image: "{{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.image }}"
+          imagePullPolicy: {{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.imagePullPolicy }}
+          env:
+            - name: METHOD
+              value: LIST
+            - name: LABEL
+              value: "{{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.label }}"
+            - name: FOLDER
+              value: "/etc/grafana/provisioning/datasources"
+            {{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.searchNamespace }}"
+            {{- end }}
+          resources:
+          volumeMounts:
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+{{- end}}
+      containers:
+{{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.enabled }}
+        - name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}-sc-dashboard
+          image: "{{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.image }}"
+          imagePullPolicy: {{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.imagePullPolicy }}
+          env:
+            - name: LABEL
+              value: "{{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.label }}"
+            - name: FOLDER
+              value: "{{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.folder }}{{- with .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}"
+            {{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.searchNamespace }}"
+            {{- end }}
+          volumeMounts:
+            - name: sc-dashboard-volume
+              mountPath: {{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.folder | quote }}
+{{- end}}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.marceloAdobeTest.proxy.monitoring.image.repository }}:{{ .Values.marceloAdobeTest.proxy.monitoring.image.tag }}"
+          imagePullPolicy: {{ .Values.marceloAdobeTest.proxy.monitoring.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/grafana/grafana.ini"
+              subPath: grafana.ini
+            - name: storage
+              mountPath: "/var/lib/grafana"
+{{- if .Values.marceloAdobeTest.proxy.monitoring.datasources }}
+            - name: config
+              mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
+              subPath: datasources.yaml
+{{- end }}
+{{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.enabled }}
+            - name: sc-dashboard-volume
+              mountPath: {{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.folder | quote }}
+{{- if not .Values.marceloAdobeTest.proxy.monitoring.dashboardProviders }}
+            - name: sc-dashboard-provider
+              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
+              subPath: provider.yaml
+{{- end}}
+{{- end}}
+{{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.enabled }}
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+{{- end}}
+          ports:
+            - name: service
+              containerPort: {{ .Values.marceloAdobeTest.proxy.monitoring.port }}
+              protocol: TCP
+            - name: grafana
+              containerPort: 3000
+              protocol: TCP
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+        - name: storage
+          emptyDir: {}
+      {{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.enabled }}
+        - name: sc-dashboard-volume
+          emptyDir: {}
+      {{- if not .Values.marceloAdobeTest.proxy.monitoring.dashboardProviders }}
+        - name: sc-dashboard-provider
+          configMap:
+            name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}-config-dashboards
+      {{- end -}}
+      {{- end }}
+      {{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.enabled }}
+        - name: sc-datasources-volume
+          emptyDir: {}
+      {{- end -}}

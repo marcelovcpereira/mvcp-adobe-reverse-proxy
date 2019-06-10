@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+  labels:
+    app: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+data:
+  grafana.ini: |
+{{- range $key, $value := index .Values.marceloAdobeTest.proxy.monitoring "grafana.ini" }}
+    [{{ $key }}]
+    {{- range $elem, $elemVal := $value }}
+    {{ $elem }} = {{ $elemVal }}
+    {{- end }}
+{{- end }}
+
+{{- if .Values.marceloAdobeTest.proxy.monitoring.datasources }}
+{{ $root := . }}
+  {{- range $key, $value := .Values.marceloAdobeTest.proxy.monitoring.datasources }}
+  {{ $key }}: |
+{{ tpl (toYaml $value | indent 4) $root }}
+  {{- end -}}
+{{- end -}}

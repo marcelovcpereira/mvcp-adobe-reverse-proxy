@@ -1,0 +1,24 @@
+{{- if .Values.marceloAdobeTest.proxy.monitoring.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+  labels:
+    app: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+{{- if or .Values.marceloAdobeTest.proxy.monitoring.rbac.pspEnabled (and .Values.marceloAdobeTest.proxy.monitoring.rbac.namespaced (or .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.enabled .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.enabled)) }}
+rules:
+{{- if .Values.marceloAdobeTest.proxy.monitoring.rbac.pspEnabled }}
+- apiGroups:      ['extensions']
+  resources:      ['podsecuritypolicies']
+  verbs:          ['use']
+  resourceNames:  [{{ .Values.marceloAdobeTest.proxy.monitoring.name }}]
+{{- end }}
+{{- if and .Values.marceloAdobeTest.proxy.monitoring.rbac.namespaced (or .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.enabled .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.enabled) }}
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["configmaps"]
+  verbs: ["get", "watch", "list"]
+{{- end }}
+{{- else }}
+rules: []
+{{- end }}
+{{- end }}

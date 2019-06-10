@@ -1,0 +1,16 @@
+{{- if and .Values.marceloAdobeTest.proxy.monitoring.rbac.create (not .Values.marceloAdobeTest.proxy.monitoring.rbac.namespaced) }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}-clusterrole
+{{- if or .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.enabled .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.enabled }}
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["configmaps"]
+  verbs: ["get", "watch", "list"]
+{{- else }}
+rules: []
+{{- end}}
+{{- end}}

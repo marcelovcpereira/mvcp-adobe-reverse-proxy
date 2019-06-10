@@ -1,0 +1,21 @@
+{{- if .Values.marceloAdobeTest.proxy.monitoring.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+  labels:
+    app: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.serviceAccount.name }}
+{{- if .Values.marceloAdobeTest.proxy.monitoring.rbac.namespaced }}
+roleRef:
+  kind: Role
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- end -}}

@@ -41,7 +41,7 @@ public class Entrypoint {
      *
      * @param body Map  Payload of the request
      * @param r HTTPServletRequest Object containing information about the HTTP request
-     * @return
+     * @return ResponseEntity HTTP response
      */
     @RequestMapping(value = "**")
     public ResponseEntity<String> get(@RequestBody(required = false) Map<String, String> body, HttpServletRequest r) {
