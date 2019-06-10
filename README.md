@@ -94,7 +94,7 @@ Example response:
 ```bash
 kubectl port-forward -n marcelo-test svc/prometheus-service 7777:80
 ```
-After the port forward, access in your browser: http://localhost:9999
+After the port forward, access in your browser: http://localhost:7777
 
 
 #### Visiting Grafana dashboard for metrics visualization:
@@ -167,3 +167,4 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 >https://groups.google.com/forum/#!topic/prometheus-users/MkyxLiVsJz0
 >https://blog.softwaremill.com/practical-monitoring-with-prometheus-ee09a1dd5527
 >https://www.joedog.org/siege-manual/
+>https://github.com/helm/helm/issues/2798
