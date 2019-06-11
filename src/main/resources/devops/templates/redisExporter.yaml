@@ -1,0 +1,18 @@
+{{- if .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+  labels:
+    app: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+spec:
+  type: ClusterIP
+  ports:
+    - name: redis-exporter
+      port: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.port }}
+      targetPort: 9121
+      protocol: TCP
+  selector:
+    app: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+    release: {{ .Release.Name }}
+{{- end }}

@@ -54,6 +54,14 @@ marceloAdobeTest:
       port: 9898
       name: marcelo-adobe-grafana
       prometheusPort: 80
+      prometheusExporter:
+        enabled: true
+        port: 9121
+        name: marcelo-adobe-redis-prometheus-exporter
+        redisAddress: redis://marcelo-adobe-redis.marcelo-test.svc.cluster.local:6379
+        image:
+          repository: oliver006/redis_exporter
+          tag: v0.28.0
       service:
         type: ClusterIP
       adminUser: admin
@@ -119,7 +127,7 @@ marceloAdobeTest:
 #################################
   serviceA:
     enabled: true
-    replicas: 2
+    replicas: 1
     name: marcelo-adobe-service-a
     image:
       repository: marcelovcpereira/adobe-test:servicea
@@ -128,7 +136,7 @@ marceloAdobeTest:
       SERVICE_A_PORT: 9000
   serviceB:
     enabled: true
-    replicas: 3
+    replicas: 1
     name: marcelo-adobe-service-b
     image:
       repository: marcelovcpereira/adobe-test:serviceb
@@ -139,6 +147,6 @@ marceloAdobeTest:
 # CACHE CONFIGURATION #
 #######################
   redis:
-    enabled: false
+    enabled: true
     name: marcelo-adobe-redis
     port: 6379

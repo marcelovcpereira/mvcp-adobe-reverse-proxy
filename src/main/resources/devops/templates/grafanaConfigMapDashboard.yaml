@@ -23,7 +23,7 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 1,
+      "id": 2,
       "links": [],
       "panels": [
         {
@@ -33,7 +33,7 @@ data:
           "dashes": false,
           "fill": 1,
           "gridPos": {
-            "h": 8,
+            "h": 7,
             "w": 10,
             "x": 0,
             "y": 0
@@ -66,7 +66,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{ `{{ uri }}` }} {{`{{ status }}`}}",
+              "legendFormat": "{{`{{ uri }}`}} {{`{{ status }}`}}",
               "refId": "A"
             }
           ],
@@ -118,7 +118,7 @@ data:
           "dashes": false,
           "fill": 1,
           "gridPos": {
-            "h": 8,
+            "h": 7,
             "w": 8,
             "x": 10,
             "y": 0
@@ -198,7 +198,7 @@ data:
         },
         {
           "gridPos": {
-            "h": 8,
+            "h": 7,
             "w": 6,
             "x": 18,
             "y": 0
@@ -261,7 +261,7 @@ data:
             "h": 4,
             "w": 6,
             "x": 0,
-            "y": 8
+            "y": 7
           },
           "id": 10,
           "interval": null,
@@ -333,7 +333,7 @@ data:
             "h": 4,
             "w": 4,
             "x": 6,
-            "y": 8
+            "y": 7
           },
           "id": 2,
           "legend": {
@@ -415,10 +415,10 @@ data:
           "dashes": false,
           "fill": 1,
           "gridPos": {
-            "h": 6,
-            "w": 10,
+            "h": 4,
+            "w": 9,
             "x": 10,
-            "y": 8
+            "y": 7
           },
           "id": 8,
           "legend": {
@@ -477,6 +477,115 @@ data:
               "logBase": 1,
               "max": null,
               "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "gridPos": {
+            "h": 5,
+            "w": 10,
+            "x": 0,
+            "y": 11
+          },
+          "id": 14,
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "paceLength": 10,
+          "percentage": true,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(redis_keyspace_hits_total[5m])",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "hits",
+              "metric": "",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            },
+            {
+              "expr": "irate(redis_keyspace_misses_total[5m])",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "misses",
+              "metric": "",
+              "refId": "B",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Redis Cache Hits / Misses per Sec",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
               "show": true
             },
             {

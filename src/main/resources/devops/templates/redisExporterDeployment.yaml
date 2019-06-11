@@ -1,0 +1,41 @@
+{{- if .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.enabled -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+  labels:
+    app: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+        release: {{ .Release.Name }}
+    spec:
+      
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.image.repository }}:{{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          args:
+          ports:
+            - name: exporter-port
+              containerPort: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.port }}
+          env:
+            - name: REDIS_ADDR
+              value: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.redisAddress }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: exporter-port
+          readinessProbe:
+            httpGet:
+              path: /
+              port: exporter-port
+          resources:
+{{- end }}
