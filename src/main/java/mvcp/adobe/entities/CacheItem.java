@@ -1,5 +1,8 @@
 package mvcp.adobe.entities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,13 +16,16 @@ import java.util.Date;
  * @since       2019-06-10
  */
 public class CacheItem {
+    public static final Logger logger = (Logger) LoggerFactory.getLogger(CacheItem.class);
     private Response response;
     private String isoCreated;
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    public CacheItem(Response response, Date created) {
+    public CacheItem () {}
+
+    public CacheItem(Response response) {
         this.response = response;
-        this.isoCreated = (new SimpleDateFormat(DATE_FORMAT)).format(created);
+        this.isoCreated = (new SimpleDateFormat(DATE_FORMAT)).format(new Date());
     }
 
     public Response getResponse() {
@@ -45,6 +51,7 @@ public class CacheItem {
      * @throws ParseException Thrown in case the string is invalid
      */
     public Date getCreated() throws ParseException {
-        return (new SimpleDateFormat(DATE_FORMAT)).parse(isoCreated);
+        Date date =(new SimpleDateFormat(DATE_FORMAT)).parse(isoCreated);
+        return date;
     }
 }

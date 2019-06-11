@@ -1,7 +1,8 @@
 package mvcp.adobe.entities;
 
-import mvcp.adobe.abstractions.Balancer;
+import mvcp.adobe.abstractions.BaseLoadBalancer;
 import mvcp.adobe.abstractions.IServiceHandler;
+import mvcp.adobe.enums.LoadBalanceStrategies;
 import mvcp.adobe.exceptions.InvalidServiceDefinitionException;
 import mvcp.adobe.exceptions.NoAvailableEndpointsException;
 import org.slf4j.Logger;
@@ -18,8 +19,8 @@ import java.util.List;
  * <ul>
  *     <li>name: Name of the Service</li>
  *     <li>domain: Domain of the Service (this acts ike a 'cluster' name)</li>
- *     <li>balancer: Implementation of a Load Balancer to route the incoming requests</li>
- *     <li>strategy: Type of implementation the internal balancer should follow</li>
+ *     <li>baseLoadBalancer: Implementation of a Load BaseLoadBalancer to route the incoming requests</li>
+ *     <li>strategy: Type of implementation the internal baseLoadBalancer should follow</li>
  *     <li>endpoints: List of registered endpoints that are candidate for executing the Request</li>
  * </ul>
  * <p>
@@ -35,7 +36,7 @@ public class Service implements IServiceHandler {
     private String domain;
     private List<Endpoint> endpoints;
     private LoadBalanceStrategies strategy;
-    private Balancer balancer;
+    private BaseLoadBalancer baseLoadBalancer;
 
     public Service() {}
 
@@ -48,27 +49,27 @@ public class Service implements IServiceHandler {
     }
 
     /**
-     * Instantiates the correct Load Balancer instance depending on the configured strategy.
+     * Instantiates the correct Load BaseLoadBalancer instance depending on the configured strategy.
      */
     public void initBalancer() {
         switch(this.strategy) {
             case RANDOM:
-                this.balancer = new RandomLoadBalancer(this.endpoints);
+                this.baseLoadBalancer = new RandomLoadBalancer(this.endpoints);
                 break;
             case ROUND_ROBIN:
-                this.balancer = new RoundRobinLoadBalancer(this.endpoints);
+                this.baseLoadBalancer = new RoundRobinLoadBalancer(this.endpoints);
                 break;
             default:
-                this.balancer = new RandomLoadBalancer(this.endpoints);
+                this.baseLoadBalancer = new RandomLoadBalancer(this.endpoints);
         }
     }
 
-    public Balancer getBalancer() {
-        return balancer;
+    public BaseLoadBalancer getBaseLoadBalancer() {
+        return baseLoadBalancer;
     }
 
-    public void setBalancer(Balancer balancer) {
-        this.balancer = balancer;
+    public void setBaseLoadBalancer(BaseLoadBalancer baseLoadBalancer) {
+        this.baseLoadBalancer = baseLoadBalancer;
     }
 
     public String getName() {
@@ -104,7 +105,7 @@ public class Service implements IServiceHandler {
     }
 
     /**
-     * Executes the request by delegating the Endpoint decision to the Load Balancer.
+     * Executes the request by delegating the Endpoint decision to the Load BaseLoadBalancer.
      *
      * @param request HTTP request to be processed
      * @return response HTTP returned response
@@ -112,7 +113,7 @@ public class Service implements IServiceHandler {
      */
     @Override
     public Response processRequest(Request request) throws NoAvailableEndpointsException {
-        return this.balancer.balance(request);
+        return this.baseLoadBalancer.balance(request);
     }
 
     /**
@@ -161,6 +162,11 @@ public class Service implements IServiceHandler {
         return ret;
     }
 
+    /**
+     * Stringifies a Service for easier debugging.
+     *
+     * @return String representation of the Service
+     */
     public String toString() {
         String ret = this.getName() + "/" + this.getDomain() + "/" + this.getStrategy().toString() + " - hosts: ";
         for (Endpoint e : this.endpoints) {

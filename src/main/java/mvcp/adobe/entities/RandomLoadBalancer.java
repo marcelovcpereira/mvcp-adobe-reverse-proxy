@@ -1,6 +1,6 @@
 package mvcp.adobe.entities;
 
-import mvcp.adobe.abstractions.Balancer;
+import mvcp.adobe.abstractions.BaseLoadBalancer;
 
 import java.util.List;
 import java.util.Random;
@@ -11,7 +11,7 @@ import java.util.Random;
  * @version     1.0.0
  * @since       2019-06-08
  */
-public class RandomLoadBalancer extends Balancer {
+public class RandomLoadBalancer extends BaseLoadBalancer {
     public RandomLoadBalancer() {
         super();
     }

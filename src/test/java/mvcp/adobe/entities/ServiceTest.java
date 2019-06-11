@@ -1,6 +1,7 @@
 package mvcp.adobe.entities;
 
 
+import mvcp.adobe.enums.LoadBalanceStrategies;
 import mvcp.adobe.exceptions.InvalidServiceDefinitionException;
 import org.junit.Test;
 import org.slf4j.Logger;

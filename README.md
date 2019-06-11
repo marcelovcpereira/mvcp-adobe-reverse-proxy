@@ -140,12 +140,11 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 
 
 ## Improvements:
-- Create tests for Cache Control 
-- Implement more Cache Control headers
+- Implement a K8s Operator
 - Make Cache Control 100% compliant to specification
-- Configure credentials for acessing the Cache
+- Configure credentials for accessing the Cache
 - Generate and expose metrics of Cache (miss/hists/uptime/etc)
-- Implement cluster version of Redis for better scalability
+- Implement cluster version of Redis for better scalability (currently standalone)
 - Externalize a toggle for enabling/disabling Cache deployment
 - Implement more Strategies of load balancing
 - Increase test coverage

@@ -1,6 +1,7 @@
 package mvcp.adobe.proxy;
 
 import mvcp.adobe.entities.*;
+import mvcp.adobe.enums.EndpointStatus;
 import mvcp.adobe.exceptions.InvalidServiceDefinitionException;
 import mvcp.adobe.exceptions.NoAvailableEndpointsException;
 import mvcp.adobe.exceptions.ServiceHostNotFoundException;

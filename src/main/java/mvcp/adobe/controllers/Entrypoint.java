@@ -1,6 +1,6 @@
 package mvcp.adobe.controllers;
 
-import mvcp.adobe.entities.CacheManager;
+import mvcp.adobe.components.CacheManager;
 import mvcp.adobe.entities.Request;
 import mvcp.adobe.exceptions.CacheNotAvailableException;
 import mvcp.adobe.exceptions.NoAvailableEndpointsException;
@@ -91,7 +91,7 @@ public class Entrypoint {
                     cache.store(req, response);
                 }
             } catch (CacheNotAvailableException cnae) {
-                logger.info("+++++Cache server not available. Executing request+++++");
+                logger.info("+++++Cache server not available.+++++");
                 logger.info("+++++TRACE: (" + cnae.getMessage() + ")+++++");
                 response = proxy.processRequest(req);
             }

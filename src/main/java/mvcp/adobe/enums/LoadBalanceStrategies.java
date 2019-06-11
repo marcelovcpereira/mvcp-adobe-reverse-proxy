@@ -1,4 +1,4 @@
-package mvcp.adobe.entities;
+package mvcp.adobe.enums;
 /**
  * Defined Load balance strategies.
  *

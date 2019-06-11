@@ -1,4 +1,7 @@
 package mvcp.adobe.entities;
+
+import mvcp.adobe.enums.EndpointStatus;
+
 /**
  * Represents a server host and port configuration that is responding for a certain Service.
  * Each Endpoint has a status value to represent its health.
@@ -60,7 +63,13 @@ public class Endpoint {
         this.status = status;
     }
 
-    //Code reference: https://www.geeksforgeeks.org/equals-hashcode-methods-java/
+    /**
+     * Used for easier internal comparison between Endpoint objects.
+     * Code reference: https://www.geeksforgeeks.org/equals-hashcode-methods-java/
+     *
+     * @param obj Any object to be compared to this Service
+     * @return boolean True in case we have a real equality between this object and the parameter obj
+     */
     @Override
     public boolean equals(Object obj)
     {

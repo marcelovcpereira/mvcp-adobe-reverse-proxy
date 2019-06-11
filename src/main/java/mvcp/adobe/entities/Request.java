@@ -146,4 +146,3 @@ public class Request {
         return host;
     }
 }
-

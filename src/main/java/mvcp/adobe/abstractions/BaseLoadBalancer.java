@@ -2,7 +2,7 @@ package mvcp.adobe.abstractions;
 
 import mvcp.adobe.connection.HttpForwarder;
 import mvcp.adobe.entities.Endpoint;
-import mvcp.adobe.entities.EndpointStatus;
+import mvcp.adobe.enums.EndpointStatus;
 import mvcp.adobe.entities.Request;
 import mvcp.adobe.entities.Response;
 import mvcp.adobe.exceptions.NoAvailableEndpointsException;
@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * Responsible for trying to fulfil a request using one of the available Endpoints.
+ * Abstraction that contains the basic behavior of a Load Balancer.
+ * It is responsible for trying to fulfil a request using one of the available Endpoints.
+ * <p>
  * It tries all available Endpoints until some of them fulfils the request or all fail.
  * The strategy of electing which Endpoint should be the next candidate depends on the
  * routing strategy implemented in the subclasses.
@@ -21,15 +23,15 @@ import java.util.List;
  * @version     1.0.0
  * @since       2019-06-08
  */
-public abstract class Balancer {
-    public static final Logger logger = (Logger) LoggerFactory.getLogger(Balancer.class);
+public abstract class BaseLoadBalancer implements ILoadBalancer {
+    public static final Logger logger = (Logger) LoggerFactory.getLogger(BaseLoadBalancer.class);
     protected List<Endpoint> endpoints;
 
-    public Balancer() {
+    public BaseLoadBalancer() {
         this.endpoints = new ArrayList<>();
     }
 
-    public Balancer(List<Endpoint> endpoints) {
+    public BaseLoadBalancer(List<Endpoint> endpoints) {
         this.endpoints = endpoints;
     }
 
@@ -69,7 +71,7 @@ public abstract class Balancer {
      *
      * @return True in case there is at least one Endpoint candidate
      */
-    protected boolean hasEndpointCandidate() {
+    public boolean hasEndpointCandidate() {
         boolean ret = false;
         for (Endpoint e : endpoints) {
             if (e.getStatus() == EndpointStatus.ACTIVE || e.getStatus() == EndpointStatus.PENDING) return true;
@@ -82,7 +84,7 @@ public abstract class Balancer {
      *
      * @return List A list of Endpoint that are candidates to execute a request
      */
-    protected List<Endpoint> getEndpointCandidates() {
+    public List<Endpoint> getEndpointCandidates() {
         List<Endpoint> ret = new ArrayList<>();
         for (Endpoint e : endpoints) {
             if (e.getStatus() == EndpointStatus.ACTIVE || e.getStatus() == EndpointStatus.PENDING) {

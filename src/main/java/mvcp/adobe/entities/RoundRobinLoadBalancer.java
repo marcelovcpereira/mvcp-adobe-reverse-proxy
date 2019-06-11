@@ -1,6 +1,6 @@
 package mvcp.adobe.entities;
 
-import mvcp.adobe.abstractions.Balancer;
+import mvcp.adobe.abstractions.BaseLoadBalancer;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @version     1.0.0
  * @since       2019-06-08
  */
-public class RoundRobinLoadBalancer extends Balancer {
+public class RoundRobinLoadBalancer extends BaseLoadBalancer {
     private int current;
 
     public RoundRobinLoadBalancer(List<Endpoint> endpoints) { super(endpoints); }

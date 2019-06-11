@@ -1,5 +1,6 @@
 package mvcp.adobe.entities;
 
+import mvcp.adobe.enums.LoadBalanceStrategies;
 import org.junit.Before;
 
 import java.util.ArrayList;

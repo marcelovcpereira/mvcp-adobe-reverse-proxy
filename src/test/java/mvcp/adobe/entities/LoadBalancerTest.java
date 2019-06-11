@@ -1,7 +1,7 @@
 package mvcp.adobe.entities;
 
 
-import mvcp.adobe.abstractions.Balancer;
+import mvcp.adobe.abstractions.BaseLoadBalancer;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -29,15 +29,15 @@ public class LoadBalancerTest extends BaseTest{
         }
     }
 
-    private void balancerShouldCorrectlyInitialize(Class<? extends Balancer> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private void balancerShouldCorrectlyInitialize(Class<? extends BaseLoadBalancer> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         int endpointListSize = 8;
         List<Endpoint> endpoints = createEndpointList(endpointListSize);
-        Constructor<? extends Balancer> constructor = clazz.getConstructor(List.class);
-        Balancer balancer = constructor.newInstance(endpoints);
+        Constructor<? extends BaseLoadBalancer> constructor = clazz.getConstructor(List.class);
+        BaseLoadBalancer baseLoadBalancer = constructor.newInstance(endpoints);
 
-        assertEquals(balancer.getEndpoints().size(), endpointListSize);
+        assertEquals(baseLoadBalancer.getEndpoints().size(), endpointListSize);
         for (Endpoint endpoint : endpoints) {
-            assertThat(balancer.getEndpoints(), CoreMatchers.hasItem(endpoint));
+            assertThat(baseLoadBalancer.getEndpoints(), CoreMatchers.hasItem(endpoint));
         }
     }
 
@@ -48,13 +48,13 @@ public class LoadBalancerTest extends BaseTest{
         Endpoint[] history2 = new Endpoint[totalEndpoints];
         Endpoint[] history3 = new Endpoint[totalEndpoints];
         for (int i = 0; i < totalEndpoints; i++) {
-            history1[i] = roundrobin.getBalancer().nextEndpoint();
+            history1[i] = roundrobin.getBaseLoadBalancer().nextEndpoint();
         }
         for (int i = 0; i < totalEndpoints; i++) {
-            history2[i] = roundrobin.getBalancer().nextEndpoint();
+            history2[i] = roundrobin.getBaseLoadBalancer().nextEndpoint();
         }
         for (int i = 0; i < totalEndpoints; i++) {
-            history3[i] = roundrobin.getBalancer().nextEndpoint();
+            history3[i] = roundrobin.getBaseLoadBalancer().nextEndpoint();
         }
 
         for (int i = 0; i < totalEndpoints; i++) {
@@ -74,13 +74,13 @@ public class LoadBalancerTest extends BaseTest{
         Endpoint[] history2 = new Endpoint[totalEndpoints];
         Endpoint[] history3 = new Endpoint[totalEndpoints];
         for (int i = 0; i < totalEndpoints; i++) {
-            history1[i] = random.getBalancer().nextEndpoint();
+            history1[i] = random.getBaseLoadBalancer().nextEndpoint();
         }
         for (int i = 0; i < totalEndpoints; i++) {
-            history2[i] = random.getBalancer().nextEndpoint();
+            history2[i] = random.getBaseLoadBalancer().nextEndpoint();
         }
         for (int i = 0; i < totalEndpoints; i++) {
-            history3[i] = random.getBalancer().nextEndpoint();
+            history3[i] = random.getBaseLoadBalancer().nextEndpoint();
         }
         assertTrue(history1 != history2 || history1 != history3 || history2 != history3);
     }
