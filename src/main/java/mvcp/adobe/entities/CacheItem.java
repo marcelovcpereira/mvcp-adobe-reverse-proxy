@@ -6,8 +6,11 @@ import java.util.Date;
 
 /**
  * Object wrapper for a Response stored in Cache.
- * Contains the response and the cache creation date
+ * Contains the response and the cache creation date (in ISO-8601 format)
  *
+ * @author      Marcelo Pereira
+ * @version     1.0.0
+ * @since       2019-06-10
  */
 public class CacheItem {
     private Response response;
@@ -35,6 +38,12 @@ public class CacheItem {
         this.isoCreated = created;
     }
 
+    /**
+     * Transforms the ISO 8601 date representation into a Java Date object
+     *
+     * @return Date Date object converted from a ISO 8601 string
+     * @throws ParseException Thrown in case the string is invalid
+     */
     public Date getCreated() throws ParseException {
         return (new SimpleDateFormat(DATE_FORMAT)).parse(isoCreated);
     }

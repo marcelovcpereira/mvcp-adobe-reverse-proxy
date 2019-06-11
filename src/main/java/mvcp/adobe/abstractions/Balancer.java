@@ -12,10 +12,14 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * Responsible for trying to fulfil a request using one of the available Endpoints. It tries all available Endpoints until
- * some of them fulfils the request or all fail. The strategy of electing which Endpoint should be the next candidate for
- * attempting the request depends on the routing implementation of the subclasses.
- * 
+ * Responsible for trying to fulfil a request using one of the available Endpoints.
+ * It tries all available Endpoints until some of them fulfils the request or all fail.
+ * The strategy of electing which Endpoint should be the next candidate depends on the
+ * routing strategy implemented in the subclasses.
+ *
+ * @author      Marcelo Pereira
+ * @version     1.0.0
+ * @since       2019-06-08
  */
 public abstract class Balancer {
     public static final Logger logger = (Logger) LoggerFactory.getLogger(Balancer.class);
@@ -29,7 +33,13 @@ public abstract class Balancer {
         this.endpoints = endpoints;
     }
 
-    //Applies the defined strategy to retrieve the response from the elected endpoint
+    /**
+     * Applies the defined strategy to retrieve the response from the elected endpoint
+     *
+     * @param request Request to be executed
+     * @return Response Response sent from the Endpoint
+     * @throws NoAvailableEndpointsException Thrown in case no Endpoint is available for executing the request
+     */
     public Response balance(Request request) throws NoAvailableEndpointsException {
         if (request != null) {
             while (hasEndpointCandidate()) {
@@ -54,6 +64,11 @@ public abstract class Balancer {
         return endpoints;
     }
 
+    /**
+     * Verifies if any of the registered Endpoint is marked as able to execute the request.
+     *
+     * @return True in case there is at least one Endpoint candidate
+     */
     protected boolean hasEndpointCandidate() {
         boolean ret = false;
         for (Endpoint e : endpoints) {
@@ -62,6 +77,11 @@ public abstract class Balancer {
         return ret;
     }
 
+    /**
+     * Returns a list of all Endpoints marked as able to execute a Request, meaning ACTIVE or PENDING.
+     *
+     * @return List A list of Endpoint that are candidates to execute a request
+     */
     protected List<Endpoint> getEndpointCandidates() {
         List<Endpoint> ret = new ArrayList<>();
         for (Endpoint e : endpoints) {
@@ -72,5 +92,10 @@ public abstract class Balancer {
         return ret;
     }
 
+    /**
+     * Abstract method that is responsible for electing which Endpoint should be used to execute the request.
+     *
+     * @return Endpoint The Endpoint elected by the Load Balance strategy
+     */
     public abstract Endpoint nextEndpoint();
 }

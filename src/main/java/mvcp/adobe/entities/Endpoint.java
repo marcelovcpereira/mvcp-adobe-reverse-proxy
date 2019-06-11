@@ -1,12 +1,12 @@
 package mvcp.adobe.entities;
 /**
- * Represents a server host & port configuration that is responding for a certain Service.
- * Each Endpoint has a status value to represent its health:
- * 
- * PENDING - All newly initialized Endpoints
- * ACTIVE - All endpoints that have a successful last request
- * SUSPENDED - All endpoints that have a failed last request
- * BLOCKED - Black listed 
+ * Represents a server host and port configuration that is responding for a certain Service.
+ * Each Endpoint has a status value to represent its health.
+ *
+ * @see         EndpointStatus
+ * @author      Marcelo Pereira
+ * @version     1.0.0
+ * @since       2019-06-08
  */
 public class Endpoint {
 
@@ -35,10 +35,19 @@ public class Endpoint {
         this.port = port;
     }
 
-
+    /**
+     * Returns a JSON representation of the current object
+     *
+     * @return String Json of this object
+     */
     public String toJsonString() {
         return "{ \"ip\": \"" + this.ip + "\", \"port\": " + this.port + ", \"status\": \"" + this.status.toString() + "\"}";
     }
+    /**
+     * Returns a HOST:PORT string for simpler debugging messages.
+     *
+     * @return String Colon-separated host/port string.
+     */
     public String toString() {
         return this.ip + ":" + this.port;
     }

@@ -20,19 +20,47 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * Unique controller of the application. It's responsible for intercepting all HTTP requests for routing.
+ * Entrypoint is the unique controller of the Reverse Proxy application.
+ * It is responsible for 2 concerns:
+ * <ul>
+ *     <li>Intercepts all incoming HTTP requests</li>
+ *     <li>Decides if request should be handled by Cache or by the Proxy itself</li>
+ * </ul>
+ * <p>
+ * Entrypoint's flow is as follows:
+ * <ol>
+ * <li>A HTTP request arrives
+ * <li>Transforms it to an internal Request object
+ * <li>Askes if Cache Manager can handle it.
+ * <li>In case yes, asks Cache Manager for the cached data.
+ * <li>In case no, asks Reverse Proxy to fetch the data.
+ * <li>Returns the response from Cache or Proxy
+ * </ol>
+ *
+ * @author      Marcelo Pereira
+ * @version     1.0.0
+ * @since       2019-06-08
  */
 @RequestMapping("/")
 @RestController
 public class Entrypoint {
     public static final Logger logger = (Logger) LoggerFactory.getLogger(Entrypoint.class);
 
+    /**
+     * Injection for getting environment variables
+     */
     @Autowired
     private Environment env;
 
+    /**
+     * Reverse Proxy for executing the incoming request
+     */
     @Autowired
     private ReverseProxy proxy;
 
+    /**
+     * Manager for treating Caching mechanism
+     */
     @Autowired
     private CacheManager cache;
 
@@ -45,7 +73,7 @@ public class Entrypoint {
      * This endpoint captures all HTTP method requests.
      *
      * @param body Map  Payload of the request
-     * @param r HTTPServletRequest Object containing information about the HTTP request
+     * @param r HTTPServletRequest Context object containing information about the HTTP request
      * @return ResponseEntity HTTP response
      */
     @RequestMapping(value = "**")
@@ -76,7 +104,6 @@ public class Entrypoint {
                     headers.set(key, value);
                 }
             }
-
             return new ResponseEntity<>(response.getBody(), headers, HttpStatus.resolve(response.getStatus()));
         } catch (Exception e) {
             e.printStackTrace();

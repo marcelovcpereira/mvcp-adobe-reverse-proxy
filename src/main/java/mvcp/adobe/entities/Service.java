@@ -10,9 +10,23 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * Represents a group of Endpoints that are responding as replicas of an Application.
- * Each service can have its own load balancing strategies for routing the requests. 
- * 
+ * Service represents a group of Endpoints responding together as replicas of an Application.
+ * Each service is responsible for proper routing an incoming request to the best suitable Endpoint.
+ * The decision to which candidate the request should be sent is done via a Load Balancing strategy.
+ *  
+ * A Service is composed of:
+ * <ul>
+ *     <li>name: Name of the Service</li>
+ *     <li>domain: Domain of the Service (this acts ike a 'cluster' name)</li>
+ *     <li>balancer: Implementation of a Load Balancer to route the incoming requests</li>
+ *     <li>strategy: Type of implementation the internal balancer should follow</li>
+ *     <li>endpoints: List of registered endpoints that are candidate for executing the Request</li>
+ * </ul>
+ * <p>
+ *
+ * @author      Marcelo Pereira
+ * @version     1.0.0
+ * @since       2019-06-08
  */
 public class Service implements IServiceHandler {
     public static final Logger logger = (Logger) LoggerFactory.getLogger(Service.class);
@@ -33,6 +47,9 @@ public class Service implements IServiceHandler {
         initBalancer();
     }
 
+    /**
+     * Instantiates the correct Load Balancer instance depending on the configured strategy.
+     */
     public void initBalancer() {
         switch(this.strategy) {
             case RANDOM:
@@ -86,11 +103,25 @@ public class Service implements IServiceHandler {
         this.strategy = strategy;
     }
 
+    /**
+     * Executes the request by delegating the Endpoint decision to the Load Balancer.
+     *
+     * @param request HTTP request to be processed
+     * @return response HTTP returned response
+     * @throws NoAvailableEndpointsException Thrown in case there is no available Endpoint to execute the request
+     */
     @Override
     public Response processRequest(Request request) throws NoAvailableEndpointsException {
         return this.balancer.balance(request);
     }
 
+    /**
+     * Loads a list of Services from a property string.
+     *
+     * @param prop String Formatted configuration of services.
+     * @return List List of Services
+     * @throws InvalidServiceDefinitionException Thrown in case the format of the property is invalid
+     */
     public static List<Service> fromProperty(String prop) throws InvalidServiceDefinitionException {
         List<Service> ret = new ArrayList<>();
         String[] services = prop.split(";");
@@ -101,6 +132,13 @@ public class Service implements IServiceHandler {
         return ret;
     }
 
+    /**
+     * Transforms a property string into a Service object.
+     *
+     * @param str String representation of a Service object
+     * @return Service Object derived from the property string.
+     * @throws InvalidServiceDefinitionException Thrown in case the format of the property is invalid
+     */
     public static Service parse(String str) throws InvalidServiceDefinitionException {
         Service ret = null;
         String[] props = str.split(",");
@@ -131,7 +169,13 @@ public class Service implements IServiceHandler {
         return ret.substring(0, ret.length() - 1);
     }
 
-    //Code reference: https://www.geeksforgeeks.org/equals-hashcode-methods-java/
+    /**
+     * Used for easier internal comparison between Service objects.
+     * Code reference: https://www.geeksforgeeks.org/equals-hashcode-methods-java/
+     *
+     * @param obj Any object to be compared to this Service
+     * @return boolean True in case we have a real equality between this object and the parameter obj
+     */
     @Override
     public boolean equals(Object obj)
     {

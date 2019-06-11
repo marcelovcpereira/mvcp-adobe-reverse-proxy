@@ -19,18 +19,43 @@ import java.util.Map;
 
 /**
  * Manages HTTP Cache Control logic.
- * Current implemented properties: no-cache, no-store, private, max-age
+ * Current implemented Cache Control properties: no-cache, no-store, private, max-age
  *
- * Behaviors on request:
- * no-cache: Skips cache, execute query and then cache Response
- * no-store: Skips cache, execute query and then cache Response
- * private: Skips cache, execute query and then cache Response
- * max-age: Validate if cached object is not older than max-age in seconds
+ * CacheManager overall flow:
+ * <ol>
+ * <li>An incoming Request arrives</li>
+ * <li>Verifies if the request can be extracted from Cache based on request's Cache Control headers</li>
+ * <li>In case no, return empty</li>
+ * <li>In case yes:</li>
+ * <li>Hashes the current request (for uniquely identifying a request</li>
+ * <li>Verifies if a Response exists in cache for the hashed key</li>
+ * <li>In case no, return empty</li>
+ * <li>In case yes:</li>
+ * <li>Retrieves the cached item</li>
+ * <li>Deserializes the stored object</li>
+ * <li>Validates if cached object is still valid based on request/response Cache Control headers</li>
+ * <li>Returns cached object</li>
+ * </ol>
+ * <p>
  *
- * Behaviors on response:
- * no-cache: Does not store Response on cache.
- * no-store: Does not store Response on cache.
- * private: Does not store Response on cache.
+ * Behaviors of headers on request:
+ * <ul>
+ * <li>no-cache: Skips cache, execute query and then cache Response</li>
+ * <li>no-store: Skips cache, execute query and then cache Response</li>
+ * <li>private: Skips cache, execute query and then cache Response</li>
+ * <li>max-age: Validate if cached object is not older than max-age in seconds</li>
+ * </ul>
+ * <p>
+ * Behaviors of headers on response:
+ * <ul>
+ *     <li>no-cache: Does not store Response on cache.</li>
+ *     <li>no-store: Does not store Response on cache.</li>
+ *     <li>private: Does not store Response on cache.</li>
+ * </ul>
+ *
+ * @author      Marcelo Pereira
+ * @version     1.0.0
+ * @since       2019-06-10
  */
 @Component
 public class CacheManager {
@@ -54,10 +79,11 @@ public class CacheManager {
     }
 
     /**
-     * Retrieves a string from a Hash key in the Cache.
-     * @param key
-     * @return
-     * @throws CacheNotAvailableException
+     * Retrieves a string from a Hash key in the Cache
+     *
+     * @param key String hashed index
+     * @return String Serialized cached object
+     * @throws CacheNotAvailableException Thrown in case Cache is not accessible
      */
     private String get(String key) throws CacheNotAvailableException {
         try {
@@ -70,8 +96,8 @@ public class CacheManager {
     /**
      * Verifies if a request can be fulfilled with cached data based on Cache Control headers.
      *
-     * @param request
-     * @return boolean True in case the Response can be retrieved from Cache.
+     * @param request Incoming HTTP Request
+     * @return boolean True in case the Response can be retrieved from Cache
      */
     private boolean canGetFromCache(Request request) {
         Map<String, String> headers = request.getHeaders();
@@ -95,8 +121,9 @@ public class CacheManager {
 
     /**
      * Verifies if a response can be cached based on Cache Control headers
-     * @param response
-     * @return
+     *
+     * @param response Incoming HTTP response
+     * @return boolean True in case the response can be cached
      */
     private boolean canCache(Response response) {
         Map<String, String> headers = response.getHeaders();
@@ -119,9 +146,10 @@ public class CacheManager {
     }
 
     /**
-     * Transforms a Request into a Hash
-     * @param req
-     * @return
+     * Transforms a Request into a Hashed index
+     *
+     * @param req Request to be transformed in Hash
+     * @return String A hash representation of the request
      */
     private String hashRequest(Request req) {
         String s = new Gson().toJson(req);
@@ -135,8 +163,9 @@ public class CacheManager {
     /**
      * Hashes a string into a MD5 hex string
      * Ref: https://www.geeksforgeeks.org/md5-hash-in-java/
-     * @param input
-     * @return
+     *
+     * @param input String to be hashed
+     * @return String A MD5 Hash representation of the string
      */
     public static String getMd5(String input) {
         try {
@@ -163,17 +192,19 @@ public class CacheManager {
 
     /**
      * Extract a response from a Hash
-     * @param hash
-     * @return
+     *
+     * @param hash Serialized cached item
+     * @return CacheItem Deserialized object
      */
     private CacheItem unhashItem(String hash) {
         return new Gson().fromJson(hash, CacheItem.class);
     }
 
     /**
-     * Extract a response from a Hash
-     * @param item
-     * @return
+     * Generates a hash version of a CacheItem for being stored in the Cache.
+     *
+     * @param item Item to be cached
+     * @return String A hash representation of the object to be cached
      */
     private String hashItem(CacheItem item) {
         return new Gson().toJson(item);
@@ -181,9 +212,10 @@ public class CacheManager {
 
     /**
      * Verifies if the age of the response respects the max-age limit of the request.
-     * @param request
-     * @param item
-     * @return
+     *
+     * @param request Incoming HTTP request
+     * @param item Object retrieved from cache
+     * @return boolean True if the object from cache is still valid under Request's configuration of Cache Control
      */
     private boolean cacheItemIsValid(Request request, CacheItem item) {
         Date now = new Date();
@@ -213,11 +245,13 @@ public class CacheManager {
         }
         return true;
     }
+
     /**
      * Tries to return a cached Response based on a Request configuration.
      *
-     * @param request
-     * @return
+     * @param request Incoming HTTP request
+     * @return response Cached response
+     * @throws CacheNotAvailableException Thrown when no Cache mechanism is available
      */
     public Response getCached(Request request) throws CacheNotAvailableException {
         if (canGetFromCache(request)) {
@@ -234,13 +268,11 @@ public class CacheManager {
         return null;
     }
 
-
-
     /**
      * Stores a Response in the cache under a key derived from the Request.
-     *
-     * @param request
-     * @param response
+     * @param request The request that should be used as key
+     * @param response The response that should be stored in cache
+     * @throws CacheNotAvailableException Thrown when no Cache mechanism is available
      */
     public void store(Request request, Response response) throws CacheNotAvailableException {
         if (canCache(response)) {

@@ -6,7 +6,22 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-
+/**
+ * Request is the internal representation of a HTTP request.
+ * It contains as attributes:
+ * <ul>
+ *     <li>headers: HTTP headers</li>
+ *     <li>body; HTTP body payload</li>
+ *     <li>path: Path of the HTTP request</li>
+ *     <li>version: HTTP version used by the caller</li>
+ *     <li>method: HTTP method </li>
+ * </ul>
+ * <p>
+ *
+ * @author      Marcelo Pereira
+ * @version     1.0.0
+ * @since       2019-06-08
+ */
 public class Request {
     public static final Logger logger = (Logger) LoggerFactory.getLogger(Request.class);
     private Map<String, String> headers;
@@ -66,6 +81,11 @@ public class Request {
         this.path = path;
     }
 
+    /**
+     * Returns a query string representation of the Request's body.
+     *
+     * @return String Query string of request body
+     */
     public String stringifyBody() {
         List<String> params = new ArrayList<>();
         for (String key : this.body.keySet()) {
@@ -75,10 +95,22 @@ public class Request {
         return String.join("&", params);
     }
 
+    /**
+     * Returns a JSON representation of the Request's body.
+     *
+     * @return String Json of request body
+     */
     public String jsonBody() {
         return new Gson().toJson(this.body);
     }
 
+    /**
+     * Builds and returns a Request object from a HttpServletRequest object and the body payload.
+     *
+     * @param request Internal servlet http request
+     * @param body Payload coming in the request
+     * @return Request Internal request object generated from servlet context
+     */
     public static Request fromContextRequest(HttpServletRequest request, Map<String,String> body) {
         Request req = null;
         logger.info("Creating request object...");
@@ -103,6 +135,11 @@ public class Request {
         return req;
     }
 
+    /**
+     * Returns the HTTP 'Host' header value from the request.
+     *
+     * @return String Value of the 'Host' header
+     */
     public String getHostHeader() {
         String host = this.getHeaders().get("host");
         if (host == null) host = this.getHeaders().get("Host");
