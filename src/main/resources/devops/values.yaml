@@ -2,7 +2,7 @@ marceloAdobeTest:
   appName: marcelo-adobe-reverse-proxy
   namespace: marcelo-test
   image:
-    repository: marcelovcpereira/adobe-test:1.0.9
+    repository: marcelovcpereira/adobe-test:1.0.10
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -139,5 +139,6 @@ marceloAdobeTest:
 # CACHE CONFIGURATION #
 #######################
   redis:
+    enabled: false
     name: marcelo-adobe-redis
     port: 6379

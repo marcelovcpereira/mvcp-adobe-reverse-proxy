@@ -5,13 +5,10 @@ Implementarion and automation of a Reverse Proxy.
 ## Components
 **Entrypoint**
 Central controller responsible for intercepting all http requests done to the proxy.
-It processes the request, forwards it to the ReverseProxy, then returns the result to the caller. 
 
 **ReverseProxy**
-The heart of the flow, the proxy contains the list of the Services that are attached to it. It is responsible for caching 
-mechanisms, circuit breaker features and load balancing.
+Contains the list of the Services that are attached to it. 
 After initialized, the ReverseProxy starts polling its service's endpoints each 10 seconds for re-evaluating their health. 
-It marks them as Suspended or Active, depending on the result.
 
 **CacheManager**
 Manages HTTP Cache Control logic (Not 100% compliant).
@@ -45,10 +42,8 @@ Each Endpoint has a status value to represent its health:
 
 >*BLOCKED* - Black listed 
 
-**Balancer**
-Responsible for trying to fulfil a request using one of the available Endpoints. It tries all available Endpoints until
-some of them fulfils the request or all fail. The strategy of electing which Endpoint should be the next candidate for
-attempting the request depends on the routing implementation of the subclasses.
+**LoadBalancer**
+Responsible for trying to fulfil a request using one of the available Endpoints (via strategy)
 
 **RoundRobinLoadBalancer**
 Balancer that implements the circular strategy for electing the Endpoints.
@@ -68,6 +63,10 @@ helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f ./mv
 ```
 The above command will deploy the Reverse Proxy, Prometheus, Grafana, Redis, ServiceA & Service B based on the configuration found on file:
 >./mvcp-adobe-reverse-proxy/src/main/resources/devops/values.yaml
+
+
+>You can enable/disable or scale the deployment of mock services A and B via values.yaml. 
+>As you change these settings, also change the configuration for the proxy variables.
 
 
 ## Playing with the Reverse Proxy:
@@ -118,7 +117,7 @@ siege -c 10 -i -t 5M -f /Users/marcelopereira/Documents/workspace/mvcp-adobe-rev
 
 ##### Firing 5 req/s (300/min) during 3 minutes to Mock Service B without never touching cache
 ```bash
-siege -c 5 -i -t 3M -f /Users/marcelopereira/Documents/workspace/mvcp-adobe-reverse-proxy/siege_urls_b.txt -H "Host: b.my-services.com" -H "Cache-Control: no-cache"
+siege -c 10 -i -t 3M -f /Users/marcelopereira/Documents/workspace/mvcp-adobe-reverse-proxy/siege_urls_b.txt -H "Host: b.my-services.com" -H "Cache-Control: no-cache"
 ```
 
 ### Calculation:
@@ -145,9 +144,7 @@ PS: If you use MacOS & your docker container needs to access a local service/por
 - Configure credentials for accessing the Cache
 - Generate and expose metrics of Cache (miss/hists/uptime/etc)
 - Implement cluster version of Redis for better scalability (currently standalone)
-- Externalize a toggle for enabling/disabling Cache deployment
 - Implement more Strategies of load balancing
-- Increase test coverage
 - Externalize the configuration "polling interval" (currently: 10s)
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
