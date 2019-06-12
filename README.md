@@ -209,6 +209,7 @@ Helper for executing HTTP requests in remote hosts.
 - Implement cluster version of Redis for better scalability (currently standalone)
 - Implement more Strategies of load balancing
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
+- Implement dynamic registration of Services
 - Implement persistent volumes for storing Prometheus + Grafana data
 - Configure Prometheus Alert Manager
 - Generate and expose metrics from attached Services (availability, latency, etc)
