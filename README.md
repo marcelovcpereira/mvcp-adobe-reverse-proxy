@@ -125,7 +125,7 @@ Example response:
 
 
 
-#### Using Siege
+#### Using Siege for Load Test
 
 ##### Firing 10 req/s (600/min) during 5 minutes to Mock Service A without never touching cache
 ```bash
