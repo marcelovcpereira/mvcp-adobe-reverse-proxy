@@ -38,6 +38,7 @@ export REVERSE_PROXY_HOST="0.0.0.0"
 export REVERSE_PROXY_PORT=8080
 export REVERSE_PROXY_MANAGEMENT_ENDPOINTS="health,prometheus,metrics"
 export REVERSE_PROXY_SERVICES="ServiceA,servicea.com,RANDOM,localhost:9000;ServiceB,serviceb.com,ROUND_ROBIN,localhost:8000"
+export REVERSE_PROXY_POLLING_MILIS=8000
 export REDIS_HOST=localhost 
 export REDIS_PORT=6379
 java -jar mvcp-adobe-reverse-proxy-1.0-SNAPSHOT.jar
