@@ -51,9 +51,13 @@ The above command will deploy the Reverse Proxy, Prometheus, Grafana, Redis, Ser
 
 ### Helm Values Configuration
 `marceloAdobeTest.serviceA.enabled` - Toggles deployment of Mock Service A
+
 `marceloAdobeTest.serviceB.enabled` - Toggles deployment of Mock Service B
+
 `marceloAdobeTest.redis.enabled` - Toggles deployment of a Redis service for Caching
+
 `marceloAdobeTest.monitoring.prometheusExporter` - Toggles deployment of Redis Prometheus Exporter for metrics of Caching
+
 
 
 >You can enable/disable or scale the deployment of mock services A and B via values.yaml. 
