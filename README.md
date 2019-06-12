@@ -60,6 +60,7 @@ Parameter | Description
 --------- | ----------- 
 `marceloAdobeTest.configMap.REDIS_HOST`| Host name of Redis Cache service
 `marceloAdobeTest.configMap.REDIS_PORT` | Port of Redis Cache service
+`marceloAdobeTest.configMap.REVERSE_PROXY_POLLING_MILIS` | Interval in milliseconds for health status check
 `marceloAdobeTest.proxy.listen.address` | Bind address of reverse proxy
 `marceloAdobeTest.proxy.listen.port`|  Bind port of reverse proxy
 `marceloAdobeTest.proxy.exposedManagementEndpoints`| List of endpoints exposed by Spring boot actuator
@@ -206,7 +207,6 @@ Helper for executing HTTP requests in remote hosts.
 - Configure credentials for accessing the Cache
 - Implement cluster version of Redis for better scalability (currently standalone)
 - Implement more Strategies of load balancing
-- Externalize the configuration "polling interval" (currently: 10s)
 - Implement dynamic black list of endpoints for being used with BLOCKED status feature
 - Implement persistent volumes for storing Prometheus + Grafana data
 - Configure Prometheus Alert Manager

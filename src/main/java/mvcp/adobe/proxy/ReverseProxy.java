@@ -113,10 +113,12 @@ public class ReverseProxy {
      * Code Reference: https://stackoverflow.com/questions/3584210/preferred-java-way-to-ping-an-http-url-for-availability
      *
      */
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRateString = "${mvcp.adobe.proxy.polling.interval.milis}")
     public void pollServiceEndpoints() {
         for (Service service : services) {
-            logger.info("Polling endpoints statuses for service " + service.toString() + "...");
+            logger.info("Polling endpoints each " +
+                    env.getProperty("mvcp.adobe.proxy.polling.interval.milis") +
+                    "(ms). Service " + service.toString() + "...");
             for (Endpoint endpoint : service.getEndpoints()) {
                 try (Socket socket = new Socket()) {
                     socket.connect(new InetSocketAddress(endpoint.getIp(), endpoint.getPort()), REQUEST_TIMEOUT);

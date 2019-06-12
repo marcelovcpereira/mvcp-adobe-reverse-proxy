@@ -168,11 +168,7 @@ public class Service implements IServiceHandler {
      * @return String representation of the Service
      */
     public String toString() {
-        String ret = this.getName() + "/" + this.getDomain() + "/" + this.getStrategy().toString() + " - hosts: ";
-        for (Endpoint e : this.endpoints) {
-            ret += e.toString() + ",";
-        }
-        return ret.substring(0, ret.length() - 1);
+        return this.getName() + "/" + this.getDomain() + "/" + this.getStrategy().toString();
     }
 
     /**

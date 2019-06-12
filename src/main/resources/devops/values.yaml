@@ -19,6 +19,7 @@ marceloAdobeTest:
     REVERSE_PROXY_ENVIRONMENT: dev
     REDIS_HOST: "marcelo-adobe-redis.marcelo-test.svc.cluster.local"
     REDIS_PORT: 6379
+    REVERSE_PROXY_POLLING_MILIS: 8000
 
 #######################
 # PROXY CONFIGURATION #
