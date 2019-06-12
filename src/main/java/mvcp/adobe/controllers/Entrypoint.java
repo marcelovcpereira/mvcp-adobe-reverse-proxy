@@ -34,6 +34,7 @@ import java.util.Map;
  * <li>Askes if Cache Manager can handle it.
  * <li>In case yes, asks Cache Manager for the cached data.
  * <li>In case no, asks Reverse Proxy to fetch the data.
+ * <li>If proxy returns data, asks Cache to store it
  * <li>Returns the response from Cache or Proxy
  * </ol>
  *
