@@ -42,7 +42,6 @@ public class MD5Serializer implements ISerializer {
         headers.put("host", request.getHostHeader());
         clone.setHeaders(headers);
         s = new Gson().toJson(clone);
-        logger.info("+++++Hash request: " + s + "+++++");
         return getMd5(s);
     }
 
