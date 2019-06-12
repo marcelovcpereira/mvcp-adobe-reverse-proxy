@@ -200,7 +200,6 @@ Helper for executing HTTP requests in remote hosts.
 
 
 ## Improvements:
-- Implement a toggle for enabling/disabling monitoring deployment
 - Implement a K8s Operator
 - Make Cache Control 100% compliant to specification
 - Configure credentials for accessing the Cache
