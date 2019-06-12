@@ -1,3 +1,4 @@
+{{- if and .Values.marceloAdobeTest.monitoring.enabled }}
 {{- if .Values.marceloAdobeTest.proxy.monitoring.rbac.pspEnabled }}
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
@@ -48,4 +49,5 @@ spec:
   fsGroup:
     rule: 'RunAsAny'
   readOnlyRootFilesystem: false
+{{- end }}
 {{- end }}

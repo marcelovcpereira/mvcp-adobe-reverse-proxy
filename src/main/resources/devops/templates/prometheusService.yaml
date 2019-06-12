@@ -1,3 +1,4 @@
+{{- if and .Values.marceloAdobeTest.monitoring.enabled }}
 #Reference: https://linuxacademy.com/blog/kubernetes/running-prometheus-on-kubernetes/
 apiVersion: v1
 kind: Service
@@ -10,3 +11,4 @@ spec:
   ports:
     - port: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusPort}}
       targetPort: 9090
+{{- end }}

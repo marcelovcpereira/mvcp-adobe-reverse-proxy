@@ -51,6 +51,7 @@ marceloAdobeTest:
 # MONITORING CONFIGURATION #
 ############################
     monitoring:
+      enabled: true
       port: 9898
       name: marcelo-adobe-grafana
       prometheusPort: 80

@@ -1,3 +1,4 @@
+{{- if and .Values.marceloAdobeTest.monitoring.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -644,3 +645,4 @@ data:
       "uid": "etZQmM7Wk",
       "version": 1
     }
+{{- end }}
