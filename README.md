@@ -213,7 +213,7 @@ Helper for executing HTTP requests in remote hosts.
 - Generate and expose metrics from attached Services (availability, latency, etc)
 
 
-# References:
+## References:
 >https://helm.sh/docs/chart_best_practices/
 
 >https://github.com/helm/charts/tree/master/stable/grafana
