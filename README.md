@@ -166,10 +166,10 @@ Contains the list of the Services that are attached to it.
 After initialized, the ReverseProxy starts polling its service's endpoints each 10 seconds for re-evaluating their health. 
 
 **CacheManager:**
-Manages HTTP Cache Control logic (Not 100% compliant).
+Manages HTTP Cache Control logic (Not yet 100% compliant).
 Current implemented properties: no-cache, no-store, private, max-age.
 Both the client (request) and the service (response) can return Cache Control headers.
-Below goes the Reverse Proxy behavior when each of them uses one of the implemented headers.
+Below goes the Reverse Proxy behavior when each of them uses one of the implemented headers (basic version).
   
 Behaviors on request:
  * `no-cache`: Skips cache, execute query and then cache Response
@@ -212,7 +212,7 @@ Helper for executing HTTP requests in remote hosts.
 
 ## Improvements:
 - Implement a K8s Operator
-- Make Cache Control 100% compliant to specification
+- Make Cache Control 100% compliant to specification by following the [RFC](https://tools.ietf.org/html/rfc7234)
 - Configure credentials for accessing the Cache
 - Implement cluster version of Redis for better scalability (currently standalone)
 - Implement more Strategies of load balancing
