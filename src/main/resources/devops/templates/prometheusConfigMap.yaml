@@ -1,4 +1,4 @@
-{{- if and .Values.marceloAdobeTest.monitoring.enabled }}
+{{- if .Values.marceloAdobeTest.proxy.monitoring.enabled }}
 #Reference: https://linuxacademy.com/blog/kubernetes/running-prometheus-on-kubernetes/
 apiVersion: v1
 kind: ConfigMap

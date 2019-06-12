@@ -1,3 +1,4 @@
+{{- if .Values.marceloAdobeTest.proxy.monitoring.enabled }}
 {{- if .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.enabled -}}
 apiVersion: apps/v1beta2
 kind: Deployment
@@ -38,4 +39,5 @@ spec:
               path: /
               port: exporter-port
           resources:
+{{- end }}
 {{- end }}

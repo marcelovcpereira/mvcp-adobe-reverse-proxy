@@ -1,19 +1,19 @@
-{{- if and .Values.marceloAdobeTest.monitoring.enabled }}
+{{- if .Values.marceloAdobeTest.proxy.monitoring.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-  app: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}
-  name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}-config-dashboards
+  app: {{ $.Values.marceloAdobeTest.proxy.monitoring.name }}
+  name: {{ $.Values.marceloAdobeTest.proxy.monitoring.name }}-config-dashboards
 data:
   provider.yaml: |-
-  apiVersion: 1
-  providers:
-  - name: 'default'
-  orgId: 1
-  folder: ''
-  type: file
-  disableDeletion: false
-  options:
-path: {{ .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.folder }}{{- with .Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      options:
+        path: {{ $.Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.folder }}{{- with $.Values.marceloAdobeTest.proxy.monitoring.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}
 {{- end }}

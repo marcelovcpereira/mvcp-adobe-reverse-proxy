@@ -35,17 +35,11 @@ marceloAdobeTest:
         hosts:
           - address: "marcelo-adobe-service-a0.marcelo-test.svc.cluster.local"
             port: 9000
-          - address: "marcelo-adobe-service-a1.marcelo-test.svc.cluster.local"
-            port: 9000
       - name: b-service
         domain: b.my-services.com
         strategy: round_robin
         hosts:
           - address: "marcelo-adobe-service-b0.marcelo-test.svc.cluster.local"
-            port: 8000
-          - address: "marcelo-adobe-service-b1.marcelo-test.svc.cluster.local"
-            port: 8000
-          - address: "marcelo-adobe-service-b2.marcelo-test.svc.cluster.local"
             port: 8000
     exposedManagementEndpoints: health,info,metrics,prometheus
 ############################
@@ -53,7 +47,7 @@ marceloAdobeTest:
 ############################
     monitoring:
       enabled: true
-      port: 9898
+      port: 8989
       name: marcelo-adobe-grafana
       prometheusPort: 80
       prometheusExporter:
