@@ -36,7 +36,6 @@ import java.util.Map;
  * <li>Returns cached object</li>
  * </ol>
  * <p>
- * <p>
  * Behaviors of headers on request:
  * <ul>
  * <li>no-cache: Skips cache, execute query and then cache Response</li>
@@ -204,7 +203,7 @@ public class CacheManager {
     /**
      * Sets a Serializer instance.
      *
-     * @param s
+     * @param s Serializer instance
      */
     public void setSerializer(ISerializer s) {
         this.serializer = s;

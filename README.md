@@ -82,7 +82,6 @@ Example response:
 
 ## Monitoring SLIs
 
-### For verifying overal performance of the application, you can use Prometheus & Grafana:
 
 #### Visiting Prometheus dashboard:
 ```bash

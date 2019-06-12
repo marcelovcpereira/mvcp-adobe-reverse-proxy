@@ -31,9 +31,9 @@ public class RedisCache implements ICache {
     /**
      * Stores a string in a Hash key in the Cache.
      *
-     * @param key
-     * @param value
-     * @throws CacheNotAvailableException
+     * @param key String Hash key index to store
+     * @param value String Value to be store
+     * @throws CacheNotAvailableException Thrown when no Cache is set up
      */
     public void put(String key, String value) throws CacheNotAvailableException {
         try {
