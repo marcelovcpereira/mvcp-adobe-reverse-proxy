@@ -1,25 +1,29 @@
 # Adobe Reverse Proxy Test
 
-Implementarion and automation of a Reverse Proxy.
+Implementation and automation of a Reverse Proxy.
 
-## Download 
+## Download
 ```bash
 git clone https://github.com/marcelovcpereira/mvcp-adobe-reverse-proxy.git
 ```
 
+
 ## Building, Testing, Generating Javadoc And Running locally
 Pre requisites:
+- `Git`
 - `Java 8`
 - `Maven`
 
 
-### Building And Unit Testing
+#### Building And Unit Testing
 Run inside project folder root:
 ```bash
 mvn clean install 
 ``` 
+A jar file will be generated at /target folder
 
-### Generating Javadoc
+
+#### Generating Javadoc
 Run inside project folder root:
 ```bash
 mvn javadoc:javadoc 
@@ -27,7 +31,7 @@ mvn javadoc:javadoc
 A javadoc folder structure will be generated at /target folder
 
 
-### Running Locally
+#### Running Locally
 ```bash
 export REVERSE_PROXY_HOST="0.0.0.0"
 export REVERSE_PROXY_PORT=8080
@@ -40,8 +44,8 @@ java -jar mvcp-adobe-reverse-proxy-1.0-SNAPSHOT.jar
 This will run the Reverse Proxy locally, listening for HTTP requests coming on port 8080.
 
 
-## Deploy Reverse Proxy in a Kubernetes Cluster via Helm Chart:
->After cloning, notice that inside the project folder there is a "mvcp-adobe-reverse-proxy/src/main/resources/devops" directory containing the necessary files for launching the application in a kubernetes cluster as shown below:
+## Deploy to a Kubernetes Cluster via Helm Chart:
+
 ```bash
 helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f ./src/main/resources/devops/values.yaml ./src/main/resources/devops
 ```
@@ -49,7 +53,7 @@ The above command will deploy the Reverse Proxy, Prometheus, Grafana, Redis, Ser
 >./src/main/resources/devops/values.yaml
 
 
-### Helm Values Configuration
+#### Helm Values Configuration
 `marceloAdobeTest.serviceA.enabled` - Toggles deployment of Mock Service A
 
 `marceloAdobeTest.serviceB.enabled` - Toggles deployment of Mock Service B
@@ -62,23 +66,6 @@ The above command will deploy the Reverse Proxy, Prometheus, Grafana, Redis, Ser
 
 >You can enable/disable or scale the deployment of mock services A and B via values.yaml. 
 >As you change these settings, also change the configuration for the proxy variables.
-
-
-## Playing with the Reverse Proxy:
-
-### Using K8s Port-forward + cUrl
->Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
-```bash
-kubectl port-forward -n marcelo-test svc/marcelo-adobe-reverse-proxy 9999:9999
-curl -XGET -H "Host: a.my-services.com" http://localhost:9999/marcelo/test/15
-curl -XGET -H "Host: b.my-services.com" http://localhost:9999/marcelo/serviceb/15
-curl -H "Host: a.my-services.com" -H "Cache-Control: max-age=100" localhost:9999/marcelo/test/12345
-curl -H "Host: a.my-services.com" -H "Cache-Control: no-cache" localhost:9999/marcelo/test/12345
-```
-
-Example response:
->{"idServiceA": 15}
-
 
 ## Monitoring SLIs
 
@@ -103,6 +90,35 @@ You can change the timeframe to last 5 minutes and activate refreshing every 5s.
 
 With the visualization opened you can then access terminal and execute several requests or maybe use siege as shown below:
 
+#### SLI Calculation:
+
+- Requests Per Minute:  `rate(http_server_requests_seconds_count[5m])*60`
+
+- Memory Usage: `jvm_memory_used_bytes{area="heap",job="reverse-proxy"}`
+
+- Real time CPU Usage: `system_cpu_usage*100`
+
+- Average Latency/min (ms): `rate(http_server_requests_seconds_max{uri!~"/actuator/.*"}[5m])*1000*60`
+
+
+## Playing with the Reverse Proxy:
+
+#### Using K8s Port-forward + cUrl
+>Important: Using Postman, you cannot send restricted HTTP headers like "Host". Install Postman Interceptor for it or use cUrl shown below.
+```bash
+kubectl port-forward -n marcelo-test svc/marcelo-adobe-reverse-proxy 9999:9999
+curl -XGET -H "Host: a.my-services.com" http://localhost:9999/marcelo/test/15
+curl -XGET -H "Host: b.my-services.com" http://localhost:9999/marcelo/serviceb/15
+curl -H "Host: a.my-services.com" -H "Cache-Control: max-age=100" localhost:9999/marcelo/test/12345
+curl -H "Host: a.my-services.com" -H "Cache-Control: no-cache" localhost:9999/marcelo/test/12345
+```
+Example response:
+>{"idServiceA": 15}
+
+
+
+#### Using Siege
+
 ##### Firing 10 req/s (600/min) during 5 minutes to Mock Service A without never touching cache
 ```bash
 siege -c 10 -i -t 5M -f ${REVERSE_PROXY_FOLDER}/siege_urls_a.txt -H "Host: a.my-services.com" -H "Cache-Control: no-cache"
@@ -113,16 +129,6 @@ siege -c 10 -i -t 5M -f ${REVERSE_PROXY_FOLDER}/siege_urls_a.txt -H "Host: a.my-
 ```bash
 siege -c 10 -i -t 3M -f ${REVERSE_PROXY_FOLDER}/siege_urls_b.txt -H "Host: b.my-services.com" -H "Cache-Control: no-cache"
 ```
-
-### Calculation:
-
-`Requests Per Minute`:  `rate(http_server_requests_seconds_count[5m])*60`
-
-`Memory Usage`: `jvm_memory_used_bytes{area="heap",job="reverse-proxy"}`
-
-`Real time CPU Usage`: `system_cpu_usage*100`
-
-`Average Latency/min (ms)`: `rate(http_server_requests_seconds_max{uri!~"/actuator/.*"}[5m])*1000*60`
 
 
 #### To clean helm installations:
