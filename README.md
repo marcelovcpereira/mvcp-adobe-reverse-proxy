@@ -107,13 +107,15 @@ With the visualization opened you can then access terminal and execute several r
 
 #### SLI Calculation:
 
-- Requests Per Minute:  `rate(http_server_requests_seconds_count[5m])*60`
+- Proxy Requests Per Minute (only proxy api):  `rate(http_server_requests_seconds_count[5m])*60`
 
 - Memory Usage: `jvm_memory_used_bytes{area="heap",job="reverse-proxy"}`
 
 - Real time CPU Usage: `system_cpu_usage*100`
 
 - Average Latency/min (ms): `rate(http_server_requests_seconds_max{uri!~"/actuator/.*"}[5m])*1000*60`
+
+- Total Requests per seconds (all reqs to webserver including healthchecks): `sum(rate(http_server_requests_seconds_count[1m]))`
 
 
 ## Playing with the Reverse Proxy:
@@ -143,11 +145,15 @@ siege -c 10 -i -t 5M -f ${REVERSE_PROXY_FOLDER}/siege_urls_a.txt -H "Host: a.my-
 ```
 
 
-##### Firing 5 req/s (300/min) during 3 minutes to Mock Service B without never touching cache
+##### Firing 10 req/s (300/min) during 3 minutes to Mock Service B without never touching cache
 ```bash
 siege -c 10 -i -t 3M -f ${REVERSE_PROXY_FOLDER}/siege_urls_b.txt -H "Host: b.my-services.com" -H "Cache-Control: no-cache"
 ```
 
+##### Using Cache: Firing 100 req/s during 5 min to Mock Service A with random cache 
+```bash
+siege -c 100 -i -t 5M -f ${REVERSE_PROXY_FOLDER}/siege_urls_a.txt -H "Host: a.my-services.com" -H "Cache-Control: public"
+```
 
 #### To clean helm installations:
 ```bash

@@ -2,7 +2,7 @@ marceloAdobeTest:
   appName: marcelo-adobe-reverse-proxy
   namespace: marcelo-test
   image:
-    repository: marcelovcpereira/adobe-test:1.0.10
+    repository: marcelovcpereira/adobe-test:latest
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -47,7 +47,7 @@ marceloAdobeTest:
 ############################
     monitoring:
       enabled: true
-      port: 8989
+      port: 9898
       name: marcelo-adobe-grafana
       prometheusPort: 80
       prometheusExporter:
