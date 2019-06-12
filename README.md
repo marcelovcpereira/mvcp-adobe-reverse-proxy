@@ -55,35 +55,23 @@ The above command will deploy the Reverse Proxy, Prometheus, Grafana, Redis, Ser
 
 #### Important Helm Configuration:
 
-`marceloAdobeTest.configMap.REDIS_HOST`: Host name of Redis Cache service
-
-`marceloAdobeTest.configMap.REDIS_PORT`: Port of Redis Cache service
-
-`marceloAdobeTest.proxy.listen.address`: Bind address of reverse proxy
-
-`marceloAdobeTest.proxy.listen.port`:  Bind port of reverse proxy
-
-`marceloAdobeTest.proxy.exposedManagementEndpoints`: List of endpoints exposed by Spring boot actuator
-
-`marceloAdobeTest.proxy.monitoring.enabled`: Toggles deployment of Monitoring tools (Prometheus/Grafana)
-
-`marceloAdobeTest.proxy.monitoring.port`: Grafana container port
-
-`marceloAdobeTest.proxy.monitoring.name`: Grafana name of service
-
-`marceloAdobeTest.proxy.monitoring.adminUser`: Grafana user name
-
-`marceloAdobeTest.proxy.monitoring.adminPassword`: Grafana password
-
-`marceloAdobeTest.proxy.monitoring.prometheusPort`: Changes Prometheus container port
-
-`marceloAdobeTest.proxy.monitoring.prometheusExporter.enabled`: Toggles deployment of Redis Prometheus Exporter
- 
-`marceloAdobeTest.serviceA.enabled` - Toggles deployment of Mock Service A
-
-`marceloAdobeTest.serviceB.enabled` - Toggles deployment of Mock Service B
-
-`marceloAdobeTest.redis.enabled` - Toggles deployment of a Redis service for Caching 
+Parameter | Description 
+--------- | ----------- 
+`marceloAdobeTest.configMap.REDIS_HOST`| Host name of Redis Cache service
+`marceloAdobeTest.configMap.REDIS_PORT` | Port of Redis Cache service
+`marceloAdobeTest.proxy.listen.address` | Bind address of reverse proxy
+`marceloAdobeTest.proxy.listen.port`|  Bind port of reverse proxy
+`marceloAdobeTest.proxy.exposedManagementEndpoints`| List of endpoints exposed by Spring boot actuator
+`marceloAdobeTest.proxy.monitoring.enabled`| Toggles deployment of Monitoring tools (Prometheus/Grafana)
+`marceloAdobeTest.proxy.monitoring.port`| Grafana container port
+`marceloAdobeTest.proxy.monitoring.name`| Grafana name of service
+`marceloAdobeTest.proxy.monitoring.adminUser`| Grafana user name
+`marceloAdobeTest.proxy.monitoring.adminPassword`| Grafana password
+`marceloAdobeTest.proxy.monitoring.prometheusPort`| Changes Prometheus container port
+`marceloAdobeTest.proxy.monitoring.prometheusExporter.enabled`| Toggles deployment of Redis Prometheus Exporter
+`marceloAdobeTest.serviceA.enabled` | Toggles deployment of Mock Service A
+`marceloAdobeTest.serviceB.enabled` | Toggles deployment of Mock Service B
+`marceloAdobeTest.redis.enabled` | Toggles deployment of a Redis service for Caching |
 
 
 
