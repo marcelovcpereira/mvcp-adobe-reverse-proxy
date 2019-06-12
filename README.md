@@ -12,7 +12,7 @@ git clone https://github.com/marcelovcpereira/mvcp-adobe-reverse-proxy.git
 ## Building, Testing, Generating Javadoc And Running locally
 Pre requisites:
 - `Git`
-- `Java 8`
+- `Java 8 - SDK`
 - `Maven`
 
 
@@ -47,6 +47,11 @@ This will run the Reverse Proxy locally, listening for HTTP requests coming on p
 
 
 ## Deploy to a Kubernetes Cluster via Helm Chart:
+
+Pre requisites:
+- `k8s cluster`
+- `kubectl`
+- `helm`
 
 ```bash
 helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f ./src/main/resources/devops/values.yaml ./src/main/resources/devops
@@ -128,6 +133,9 @@ Example response:
 
 
 #### Using Siege for Load Test
+
+Pre requisites:
+- `Siege`
 
 ##### Firing 10 req/s (600/min) during 5 minutes to Mock Service A without never touching cache
 ```bash
