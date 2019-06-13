@@ -2,7 +2,7 @@ marceloAdobeTest:
   appName: marcelo-adobe-reverse-proxy
   namespace: marcelo-test
   image:
-    repository: marcelovcpereira/adobe-test:1.0.10
+    repository: marcelovcpereira/adobe-test:1.0.11
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -11,19 +11,13 @@ marceloAdobeTest:
     requests:
       cpu: "1500m"
       memory: "4096Mi"
-
-###############################################
-# Environment Variables for the Reverse Proxy #
-###############################################
+# Environment Variables for the Reverse Proxy
   configMap:
     REVERSE_PROXY_ENVIRONMENT: dev
     REDIS_HOST: "marcelo-adobe-redis.marcelo-test.svc.cluster.local"
     REDIS_PORT: 6379
     REVERSE_PROXY_POLLING_MILIS: 8000
-
-#######################
-# PROXY CONFIGURATION #
-#######################
+# Reverse Proxy Configuration
   proxy:
     listen:
       address: 0.0.0.0
@@ -42,9 +36,7 @@ marceloAdobeTest:
           - address: "marcelo-adobe-service-b0.marcelo-test.svc.cluster.local"
             port: 8000
     exposedManagementEndpoints: health,info,metrics,prometheus
-############################
-# MONITORING CONFIGURATION #
-############################
+# Monitoring Configuration
     monitoring:
       enabled: true
       port: 8989
@@ -118,9 +110,7 @@ marceloAdobeTest:
           enabled: true
           label: grafana_datasource
           searchNamespace: null
-################################
-## Mock Services Configuration #
-#################################
+## Mock Services Configuration
   serviceA:
     enabled: true
     replicas: 1
@@ -139,9 +129,7 @@ marceloAdobeTest:
       pullPolicy: IfNotPresent
     configMap:
       SERVICE_B_PORT: 8000
-#######################
-# CACHE CONFIGURATION #
-#######################
+# Cache Configuration
   redis:
     enabled: true
     name: marcelo-adobe-redis

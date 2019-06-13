@@ -13,6 +13,6 @@ rules:
   verbs: ["get", "watch", "list"]
 {{- else }}
 rules: []
-{{- end}}
-{{- end}}
+{{- end }}
+{{- end }}
 {{- end }}

@@ -3,19 +3,19 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+  name: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name }}
   labels:
-    app: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+    app: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+      app: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}
+        app: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name }}
         release: {{ .Release.Name }}
     spec:
       

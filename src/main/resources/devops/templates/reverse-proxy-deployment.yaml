@@ -22,7 +22,7 @@ spec:
             - name: REVERSE_PROXY_MANAGEMENT_ENDPOINTS
               value: {{ .Values.marceloAdobeTest.proxy.exposedManagementEndpoints | quote }}
             - name: REVERSE_PROXY_SERVICES
-              value: "{{- range $key, $value := .Values.marceloAdobeTest.proxy.services }}{{$value.name}},{{$value.domain}},{{$value.strategy}},{{- range $key2, $value2 := $value.hosts}}{{$value2.address}}:{{$value2.port}},{{- end}};{{- end}}"
+              value: "{{- range $key, $value := .Values.marceloAdobeTest.proxy.services }}{{ $value.name }},{{ $value.domain }},{{ $value.strategy }},{{- range $key2, $value2 := $value.hosts }}{{ $value2.address }}:{{ $value2.port }},{{- end }};{{- end }}"
             {{- range $key, $value := .Values.marceloAdobeTest.configMap }}
             - name: {{ $key }}
               valueFrom:

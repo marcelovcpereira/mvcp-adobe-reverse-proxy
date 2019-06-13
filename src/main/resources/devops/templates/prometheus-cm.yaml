@@ -17,10 +17,10 @@ data:
         metrics_path: /metrics
         scrape_interval: 5s
         static_configs:
-          - targets: ['{{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name}}:{{.Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.port}}']
+          - targets: ['{{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.name }}:{{ .Values.marceloAdobeTest.proxy.monitoring.prometheusExporter.port }}']
       - job_name: 'reverse-proxy'
         metrics_path: /actuator/prometheus
         scrape_interval: 5s
         static_configs:
-          - targets: ['{{.Values.marceloAdobeTest.appName}}.{{.Values.marceloAdobeTest.namespace}}.svc.cluster.local:{{.Values.marceloAdobeTest.proxy.listen.port}}']
+          - targets: ['{{ .Values.marceloAdobeTest.appName }}.{{ .Values.marceloAdobeTest.namespace }}.svc.cluster.local:{{ .Values.marceloAdobeTest.proxy.listen.port }}']
 {{- end }}

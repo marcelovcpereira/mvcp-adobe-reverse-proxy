@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   labels:
   app: {{ $.Values.marceloAdobeTest.proxy.monitoring.name }}
-  name: {{ $.Values.marceloAdobeTest.proxy.monitoring.name }}-config-dashboards
+  name: {{ $.Values.marceloAdobeTest.proxy.monitoring.name }}-dash-provider-cm
 data:
   provider.yaml: |-
     apiVersion: 1

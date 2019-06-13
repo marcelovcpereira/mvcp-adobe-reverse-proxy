@@ -81,12 +81,12 @@ spec:
             - name: sc-dashboard-provider
               mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
               subPath: provider.yaml
-{{- end}}
-{{- end}}
+{{- end }}
+{{- end }}
 {{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.enabled }}
             - name: sc-datasources-volume
               mountPath: "/etc/grafana/provisioning/datasources"
-{{- end}}
+{{- end }}
           ports:
             - name: service
               containerPort: {{ .Values.marceloAdobeTest.proxy.monitoring.port }}
@@ -118,7 +118,7 @@ spec:
       {{- if not .Values.marceloAdobeTest.proxy.monitoring.dashboardProviders }}
         - name: sc-dashboard-provider
           configMap:
-            name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}-config-dashboards
+            name: {{ .Values.marceloAdobeTest.proxy.monitoring.name }}-dash-provider-cm
       {{- end -}}
       {{- end }}
       {{- if .Values.marceloAdobeTest.proxy.monitoring.sidecar.datasources.enabled }}

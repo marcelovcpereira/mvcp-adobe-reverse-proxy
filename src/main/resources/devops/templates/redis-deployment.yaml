@@ -2,13 +2,13 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{.Values.marceloAdobeTest.redis.name}}
+  name: {{ .Values.marceloAdobeTest.redis.name }}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{.Values.marceloAdobeTest.redis.name}}
+        app: {{ .Values.marceloAdobeTest.redis.name }}
     spec:
       volumes:
         - name: host-sys
@@ -30,5 +30,5 @@ spec:
             cpu: 250m
             memory: 500Mi
         ports:
-        - containerPort: {{.Values.marceloAdobeTest.redis.port}}
-{{- end}}
+        - containerPort: {{ .Values.marceloAdobeTest.redis.port }}
+{{- end }}

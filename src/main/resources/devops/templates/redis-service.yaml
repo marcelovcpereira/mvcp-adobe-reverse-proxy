@@ -1,0 +1,14 @@
+{{- if .Values.marceloAdobeTest.redis.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.marceloAdobeTest.redis.name }}
+  labels:
+    app: {{ .Values.marceloAdobeTest.redis.name }}
+spec:
+  ports:
+  - port: {{ .Values.marceloAdobeTest.redis.port }}
+    name: redis
+  selector:
+    app: {{ .Values.marceloAdobeTest.redis.name }}
+{{- end }}

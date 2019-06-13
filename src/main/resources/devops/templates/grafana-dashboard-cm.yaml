@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: marcelo-adobe-reverse-proxy-dashboard
+  name: {{ .Values.marceloAdobeTest.appName }}-dashboard-cm
   labels:
     grafana_dashboard: "1"
 data:

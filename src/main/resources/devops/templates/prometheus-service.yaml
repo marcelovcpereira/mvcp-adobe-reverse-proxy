@@ -8,6 +8,6 @@ spec:
     app: prometheus-server
   type: NodePort
   ports:
-    - port: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusPort}}
+    - port: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusPort }}
       targetPort: 9090
 {{- end }}

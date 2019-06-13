@@ -16,7 +16,7 @@ spec:
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
           ports:
-            - containerPort: {{.Values.marceloAdobeTest.proxy.monitoring.prometheusPort}}
+            - containerPort: {{ .Values.marceloAdobeTest.proxy.monitoring.prometheusPort }}
           volumeMounts:
             - name: prometheus-config-volume
               mountPath: /etc/prometheus/

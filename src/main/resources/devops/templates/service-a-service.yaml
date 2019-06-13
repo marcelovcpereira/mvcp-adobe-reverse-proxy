@@ -4,12 +4,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $.Values.marceloAdobeTest.serviceA.name }}{{$counter}}
+  name: {{ $.Values.marceloAdobeTest.serviceA.name }}{{ $counter }}
 spec:
   ports:
     - port: {{ $.Values.marceloAdobeTest.serviceA.configMap.SERVICE_A_PORT }}
   selector:
-    app: {{ $.Values.marceloAdobeTest.serviceA.name }}{{$counter}}
+    app: {{ $.Values.marceloAdobeTest.serviceA.name }}{{ $counter }}
   clusterIP: None
 ---
 {{- end }}

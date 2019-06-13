@@ -4,15 +4,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $.Values.marceloAdobeTest.serviceA.name }}{{$counter}}
+  name: {{ $.Values.marceloAdobeTest.serviceA.name }}{{ $counter }}
 spec:
   selector:
     matchLabels:
-      app: {{ $.Values.marceloAdobeTest.serviceA.name }}{{$counter}}
+      app: {{ $.Values.marceloAdobeTest.serviceA.name }}{{ $counter }}
   template:
     metadata:
       labels:
-        app: {{ $.Values.marceloAdobeTest.serviceA.name }}{{$counter}}
+        app: {{ $.Values.marceloAdobeTest.serviceA.name }}{{ $counter }}
     spec:
       containers:
         - image: {{ $.Values.marceloAdobeTest.serviceA.image.repository }}
@@ -22,7 +22,7 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 configMapKeyRef:
-                  name: {{ $.Values.marceloAdobeTest.serviceA.name }}{{$counter}}
+                  name: {{ $.Values.marceloAdobeTest.serviceA.name }}{{ $counter }}
                   key: {{ $key }}
             {{- end }}
           ports:
