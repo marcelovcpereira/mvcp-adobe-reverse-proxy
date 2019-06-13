@@ -85,14 +85,14 @@ Parameter | Description
 
 ## Monitoring SLIs
 
-#### Visiting Prometheus dashboard:
+#### Prometheus dashboard:
 ```bash
 kubectl port-forward -n marcelo-test svc/prometheus-service 7777:80
 ```
 After the port forward, access in your browser: http://localhost:7777
 
 
-#### Visiting Grafana dashboard for metrics visualization:
+#### Grafana dashboard for metrics visualization:
 ```bash
 kubectl port-forward -n marcelo-test svc/marcelo-adobe-grafana 9898:9898
 ```
@@ -101,9 +101,7 @@ Then, access in your browser: http://localhost:9898
 >Password: (configurable on values.yaml:monitoring.adminPassword)
 
 Open the dashboard: Reverse Proxy Visualization
-You can change the timeframe to last 5 minutes and activate refreshing every 5s.
 
-With the visualization opened you can then access terminal and execute several requests or maybe use siege as shown below:
 
 #### SLI Calculation:
 
