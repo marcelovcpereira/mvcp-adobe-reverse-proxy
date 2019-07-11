@@ -1,11 +1,11 @@
-# Adobe Reverse Proxy Test
-[![Build Status](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy.svg?branch=master)](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy)
+# Reverse Proxy Test
+[![Build Status](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy.svg?branch=master)](https://travis-ci.org/marcelovcpereira/mvcp-reverse-proxy)
 
 Implementation and automation of a Reverse Proxy.
 
 ## Download
 ```bash
-git clone https://github.com/marcelovcpereira/mvcp-adobe-reverse-proxy.git
+git clone https://github.com/marcelovcpereira/mvcp-reverse-proxy.git
 ```
 
 
@@ -41,7 +41,7 @@ export REVERSE_PROXY_SERVICES="ServiceA,servicea.com,RANDOM,localhost:9000;Servi
 export REVERSE_PROXY_POLLING_MILIS=8000
 export REDIS_HOST=localhost 
 export REDIS_PORT=6379
-java -jar mvcp-adobe-reverse-proxy-1.0-SNAPSHOT.jar
+java -jar mvcp-reverse-proxy-1.0-SNAPSHOT.jar
 ``` 
 This will run the Reverse Proxy locally, listening for HTTP requests coming on port 8080.
 
@@ -54,7 +54,7 @@ Pre requisites:
 - `helm`
 
 ```bash
-helm install --name marcelo-adobe-reverse-proxy --namespace marcelo-test -f ./src/main/resources/devops/values.yaml ./src/main/resources/devops
+helm install --name marcelo-reverse-proxy --namespace marcelo-test -f ./src/main/resources/devops/values.yaml ./src/main/resources/devops
 ```
 The above command will deploy the Reverse Proxy, Prometheus, Grafana, Redis, ServiceA & Service B based on the configuration found on file:
 >./src/main/resources/devops/values.yaml
@@ -155,7 +155,7 @@ siege -c 100 -i -t 5M -f ${REVERSE_PROXY_FOLDER}/siege_urls_a.txt -H "Host: a.my
 
 #### To clean helm installations:
 ```bash
-helm del --purge marcelo-adobe-reverse-proxy
+helm del --purge marcelo-reverse-proxy
 ```
 
 PS: If you use MacOS & your docker container needs to access a local service/port, do not bind to localhost or 127.0.0.1, instead use internal docker DNS, e.g:
