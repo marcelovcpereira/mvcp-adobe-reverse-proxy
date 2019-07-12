@@ -1,5 +1,5 @@
 # Reverse Proxy Test
-[![Build Status](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy.svg?branch=master)](https://travis-ci.org/marcelovcpereira/mvcp-reverse-proxy)
+[![Build Status](https://travis-ci.org/marcelovcpereira/mvcp-reverse-proxy.svg?branch=master)](https://travis-ci.org/marcelovcpereira/mvcp-reverse-proxy)
 
 Implementation and automation of a Reverse Proxy.
 
