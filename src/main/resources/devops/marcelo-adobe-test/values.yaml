@@ -2,7 +2,7 @@ marceloAdobeTest:
   appName: marcelo-adobe-reverse-proxy
   namespace: marcelo-test
   image:
-    repository: marcelovcpereira/adobe-test:1.0.11
+    repository: marcelovcpereira/adobe-test:{{ .Release.version }}
     pullPolicy: IfNotPresent
   resources:
     limits:
