@@ -38,12 +38,12 @@ marceloAdobeTest:
     exposedManagementEndpoints: health,info,metrics,prometheus
 # Monitoring Configuration
     monitoring:
-      enabled: true
+      enabled: false
       port: 9898
       name: marcelo-adobe-grafana
       prometheusPort: 80
       prometheusExporter:
-        enabled: true
+        enabled: false
         port: 9121
         name: marcelo-adobe-redis-prometheus-exporter
         redisAddress: redis://marcelo-adobe-redis.marcelo-test.svc.cluster.local:6379
@@ -112,7 +112,7 @@ marceloAdobeTest:
           searchNamespace: null
 ## Mock Services Configuration
   serviceA:
-    enabled: true
+    enabled: false
     replicas: 1
     name: marcelo-adobe-service-a
     image:
@@ -121,7 +121,7 @@ marceloAdobeTest:
     configMap:
       SERVICE_A_PORT: 9000
   serviceB:
-    enabled: true
+    enabled: false
     replicas: 1
     name: marcelo-adobe-service-b
     image:
@@ -131,6 +131,6 @@ marceloAdobeTest:
       SERVICE_B_PORT: 8000
 # Cache Configuration
   redis:
-    enabled: true
+    enabled: false
     name: marcelo-adobe-redis
     port: 6379
