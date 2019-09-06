@@ -1,0 +1,73 @@
+---
+# Source: marcelo-adobe-test/templates/reverse-proxy-config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: marcelo-adobe-reverse-proxy
+data:
+  REDIS_HOST: "marcelo-adobe-redis.marcelo-test.svc.cluster.local"
+  REDIS_PORT: "6379"
+  REVERSE_PROXY_ENVIRONMENT: "dev"
+  REVERSE_PROXY_POLLING_MILIS: "8000"
+---
+# Source: marcelo-adobe-test/templates/reverse-proxy-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: marcelo-adobe-reverse-proxy
+spec:
+  selector:
+    matchLabels:
+      app: marcelo-adobe-reverse-proxy
+  template:
+    metadata:
+      labels:
+        app: marcelo-adobe-reverse-proxy
+    spec:
+      containers:
+        - image: marcelovcpereira/adobe-test:{{ .Chart.version }}
+          name: marcelo-adobe-reverse-proxy
+          env:
+            - name: REVERSE_PROXY_HOST
+              value: 0.0.0.0
+            - name: REVERSE_PROXY_PORT
+              value: "9999"
+            - name: REVERSE_PROXY_MANAGEMENT_ENDPOINTS
+              value: "health,info,metrics,prometheus"
+            - name: REVERSE_PROXY_SERVICES
+              value: "my-service-a,a.my-services.com,random,marcelo-adobe-service-a0.marcelo-test.svc.cluster.local:9000,;b-service,b.my-services.com,round_robin,marcelo-adobe-service-b0.marcelo-test.svc.cluster.local:8000,;"
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: marcelo-adobe-reverse-proxy
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: marcelo-adobe-reverse-proxy
+                  key: REDIS_PORT
+            - name: REVERSE_PROXY_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: marcelo-adobe-reverse-proxy
+                  key: REVERSE_PROXY_ENVIRONMENT
+            - name: REVERSE_PROXY_POLLING_MILIS
+              valueFrom:
+                configMapKeyRef:
+                  name: marcelo-adobe-reverse-proxy
+                  key: REVERSE_PROXY_POLLING_MILIS
+          ports:
+            - containerPort: 9999
+              name: default
+---
+# Source: marcelo-adobe-test/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: marcelo-adobe-reverse-proxy
+spec:
+  ports:
+    - port: 9999
+  selector:
+    app: marcelo-adobe-reverse-proxy
+  clusterIP: None
