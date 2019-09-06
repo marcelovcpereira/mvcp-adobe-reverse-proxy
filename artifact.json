@@ -1,6 +1,7 @@
 {
   "type": "gcs/object",
   "name": "gs://mvcp-spinnaker-test/marcelo-adobe-test-1.0.12.tgz",
-  "reference": "gs://mvcp-spinnaker-test/marcelo-adobe-test-1.0.12.tgz#1012",
+  "reference": "gs://mvcp-spinnaker-test/marcelo-adobe-test-1.0.12.tgz",
+  "artifactAccount": "mvcp-spinnaker-gcs",
   "version": "1.0.12"
 }
